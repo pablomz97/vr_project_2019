@@ -26,10 +26,12 @@ release:
   script:
     - echo "running release build"
     - echo "building using unity from %UNITY_DIR%"
+    - $editor = "$env:UNITY_DIR/Editor/Unity.exe"
+    - $buildDir = "$pwd/builds/win64/vr_2019_win64.exe"
     - echo "running lighting build..."
     - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -executeMethod preBuildActions.buildLighting | Out-Default ; type stdout.log"
     - echo "building project..."
-    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildWindowsPlayer '/builds/win64/vr_2019_win64.exe' | Out-Default ; type stdout.log"
+    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildWindowsPlayer $buildDir | Out-Default ; type stdout.log"
     - echo "package"
     - $butler = "$env:BUTLER_DIR/butler.exe"
     - "& $butler push builds/win64 moep/vr-2019:Win64 --userversion $env:CI_COMMIT_REF_NAME"
