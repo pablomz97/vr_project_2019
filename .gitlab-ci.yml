@@ -1,0 +1,38 @@
+stages:
+  - build
+
+build:
+  stage: build
+  script:
+    - echo "building using unity from %UNITY_DIR%"
+    - '%UNITY_DIR%/Editor/Unity.exe -quit -batchmode -logFile stdout.log -projectPath %CD%/VR_Project -buildWindowsPlayer "builds\win64\vr_2019_win64.exe & type stdout.log"
+    - echo "package"
+    - '%BUTLER_DIR%/butler.exe push builds\win64 moep/vr_2019:Win64-testing --userversion %CI_COMMIT_REF_NAME%'
+ #skipping artifact upload for now, i dont know how much storage the uni gitlab allocates to each project so better be careful
+ #   - 'R:/sysroot/7-Zip/7z.exe a -t7z -mx=9 -ms=6g VR_2019_Win64.7z builds\win64'
+ # artifacts:
+ #   name: "build_%CI_COMMIT_REF_NAME%"
+ #   paths:
+ #     #- "VR_2019_Win64.7z"
+ #   expire_in: 8 hours
+  only:
+    - master 
+
+release:
+  stage: build
+  script:
+    - echo "running release build"
+    - echo "building using unity from %UNITY_DIR%"
+    - echo "running lighting build..."
+    - '%UNITY_DIR%/Editor/Unity.exe -quit -batchmode -logFile stdout.log -projectPath %CD%/VR_Project -executeMethod preBuildActions.buildLighting & type stdout.log"
+    - echo "building project..."
+    - '%UNITY_DIR%/Editor/Unity.exe -quit -batchmode -logFile stdout.log -projectPath %CD%/VR_Project -buildWindowsPlayer "builds\win64\vr_2019_win64.exe & type stdout.log"
+    - echo "package"
+    - '%BUTLER_DIR%/butler.exe push builds\win64 moep/vr_2019:Win64 --userversion %CI_COMMIT_REF_NAME%'
+    - 'R:/sysroot/7-Zip/7z.exe a -t7z VR_2019_Win64.zip builds\win64'
+  artifacts:
+    name: "VR_2019_Win64_%CI_COMMIT_REF_NAME%"
+    paths:
+      - "VR_2019_Win64.7z"
+  only:
+    - tags
