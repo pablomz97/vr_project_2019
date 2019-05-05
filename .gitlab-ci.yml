@@ -6,11 +6,25 @@ build:
   script:
     - echo "building using unity from $env:UNITY_DIR"
     - $editor = "$env:UNITY_DIR/Editor/Unity.exe"
-    - $buildDir = "$pwd/builds/win64/vr_2019_win64.exe"
-    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildWindowsPlayer $buildDir | Out-Default ; type stdout.log"
-    - echo "package"
     - $butler = "$env:BUTLER_DIR/butler.exe"
+    
+    - echo "building win64 package..."
+    - $buildDir = "$pwd/builds/win64/vr_2019_win64.exe"
+    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildWindows64Player $buildDir | Out-Default ; type stdout.log"
+    - echo "deploying win64..."
     - "& $butler push builds/win64 moep/vr-2019:Win64-testing --userversion $env:CI_COMMIT_REF_NAME"
+    
+    - echo "building mac package..."
+    - $buildDir = "$pwd/builds/mac64/vr_2019_mac64.app"
+    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildOSXUniversalPlayer $buildDir | Out-Default ; type stdout.log"
+    - echo "deploying mac64..."
+    - "& $butler push builds/mac64 moep/vr-2019:Mac64-testing --userversion $env:CI_COMMIT_REF_NAME"
+    
+    - echo "building linux64 package..."
+    - $buildDir = "$pwd/builds/linux64/vr_2019_linux64"
+    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildLinux64Player $buildDir | Out-Default ; type stdout.log"
+    - echo "deploying linux64..."
+    - "& $butler push builds/linux64 moep/vr-2019:Linux64-testing --userversion $env:CI_COMMIT_REF_NAME"
  #skipping artifact upload for now, i dont know how much storage the uni gitlab allocates to each project so better be careful
  #   - 'R:/sysroot/7-Zip/7z.exe a -t7z -mx=9 -ms=6g VR_2019_Win64.7z builds\win64'
  # artifacts:
@@ -27,18 +41,31 @@ release:
     - echo "running release build"
     - echo "building using unity from %UNITY_DIR%"
     - $editor = "$env:UNITY_DIR/Editor/Unity.exe"
+    - $butler = "$env:BUTLER_DIR/butler.exe"
     - $buildDir = "$pwd/builds/win64/vr_2019_win64.exe"
     - echo "running lighting build..."
     - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -executeMethod preBuildActions.buildLighting | Out-Default ; type stdout.log"
-    - echo "building project..."
-    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildWindowsPlayer $buildDir | Out-Default ; type stdout.log"
-    - echo "package"
-    - $butler = "$env:BUTLER_DIR/butler.exe"
+
+    - echo "building win64 package..."
+    - $buildDir = "$pwd/builds/win64/vr_2019_win64.exe"
+    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildWindows64Player $buildDir | Out-Default ; type stdout.log"
+    - echo "deploying win64..."
     - "& $butler push builds/win64 moep/vr-2019:Win64 --userversion $env:CI_COMMIT_REF_NAME"
-    - 'R:/sysroot/7-Zip/7z.exe a -t7z VR_2019_Win64.zip builds/win64'
-  artifacts:
-    name: "VR_2019_Win64_%CI_COMMIT_REF_NAME%"
-    paths:
-      - "VR_2019_Win64.7z"
+    
+    - echo "building mac package..."
+    - $buildDir = "$pwd/builds/mac64/vr_2019_mac64.app"
+    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildOSXUniversalPlayer $buildDir | Out-Default ; type stdout.log"
+    - echo "deploying mac64..."
+    - "& $butler push builds/mac64 moep/vr-2019:Mac64 --userversion $env:CI_COMMIT_REF_NAME"
+    
+    - echo "building linux64 package..."
+    - $buildDir = "$pwd/builds/linux64/vr_2019_linux64"
+    - "& $editor -quit -batchmode -logFile stdout.log -projectPath $pwd/VR_Project -buildLinux64Player $buildDir | Out-Default ; type stdout.log"
+    - echo "deploying linux64..."
+    - "& $butler push builds/linux64 moep/vr-2019:Linux64 --userversion $env:CI_COMMIT_REF_NAME"
+  #artifacts:
+  #  name: "VR_2019_Win64_%CI_COMMIT_REF_NAME%"
+  #  paths:
+  #    - "VR_2019_Win64.7z"
   only:
     - tags

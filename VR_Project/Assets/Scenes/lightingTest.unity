@@ -208,7 +208,7 @@ Transform:
   m_GameObject: {fileID: 34581961}
   m_LocalRotation: {x: -0, y: 0.71684873, z: -0, w: 0.6972287}
   m_LocalPosition: {x: -3.01, y: 9.979, z: 1.14}
-  m_LocalScale: {x: 0.09403952, y: 4.78203, z: 9.659697}
+  m_LocalScale: {x: 0.116467945, y: 4.78203, z: 9.659697}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -299,7 +299,7 @@ Transform:
   m_GameObject: {fileID: 80607187}
   m_LocalRotation: {x: -0, y: 0.71684873, z: -0, w: 0.6972287}
   m_LocalPosition: {x: -3.01, y: 9.979, z: 10.52}
-  m_LocalScale: {x: 0.09403952, y: 4.78203, z: 9.659697}
+  m_LocalScale: {x: 0.10554996, y: 4.78203, z: 9.659697}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -1118,7 +1118,7 @@ Transform:
   m_GameObject: {fileID: 894336940}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.45, y: 9.979, z: 5.74}
-  m_LocalScale: {x: 0.27366555, y: 4.78203, z: 9.659697}
+  m_LocalScale: {x: 0.28600785, y: 4.78203, z: 9.659697}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -1551,6 +1551,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: sphere
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: caa5ea935b1c1a747a1c85892ad74834,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: caa5ea935b1c1a747a1c85892ad74834,
         type: 3}
