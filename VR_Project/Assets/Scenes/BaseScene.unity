@@ -629,7 +629,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1862529079}
   - component: {fileID: 1862529080}
-  - component: {fileID: 1862529078}
   m_Layer: 0
   m_Name: ChalkLine
   m_TagString: Untagged
@@ -637,31 +636,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1862529078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1862529077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39b4eed4ab2aeea4c87c7170a2b6e15f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 1862529080}
-  resolution: 10
-  refPoint0: {fileID: 0}
-  refPoint1: {fileID: 0}
-  refPoint2: {fileID: 0}
-  refPoint3: {fileID: 0}
-  refTransforms:
-  - {fileID: 376654489}
-  - {fileID: 1774660890}
-  - {fileID: 1838571236}
-  - {fileID: 1126130617}
-  - {fileID: 880328096}
-  - {fileID: 907908074}
 --- !u!4 &1862529079
 Transform:
   m_ObjectHideFlags: 0
@@ -769,3 +743,25 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!1 &1943136400 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 160596, guid: dc06161b6d97feb419f45f03b62e14b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1438510350}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1943136404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943136400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61b8063fa572bcf42aa0f43435259b58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 2
+  action:
+    actionPath: /actions/Chalk/in/GrabPinch
+    needsReinit: 0

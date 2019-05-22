@@ -1,68 +1,33 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
-public class PaintChalk : MonoBehaviour
+public class PaintChalk
 {
-
-	public LineRenderer lineRenderer;
 
 	public int resolution;
 
-	public Transform refPoint0, refPoint1, refPoint2, refPoint3;
-
-	public Transform[] refTransforms;
-
-	private Vector3[] refPoints;
-
-	// Start is called before the first frame update
-	void Start()
-    {
-		refPoints = new Vector3[refTransforms.Length];
-		for(int i=0; i < refTransforms.Length; i++)
-		{
-			refPoints[i] = refTransforms[i].position;
-		}
-		//AddBezierCurve(refPoint0.position, refPoint1.position, refPoint2.position, refPoint3.position);
-	}
-
-    // Update is called once per frame
-    void Update()
-    {
-		lineRenderer.positionCount = 0;
-		DrawRefPoints();
-	}
-
-
-	void DrawRefPoints()
+	public void AddPoint(Vector3 point)
 	{
-		if (refPoints.Length <= 1)
+		pointList.Add(point);
+		if (pointList.Count < 2)
 			return;
 
-		for (int i = 0; i < refPoints.Length - 1; i++)
+		if (pointList.Count == 2)
 		{
-			Vector3 a = refPoints[i];
-			Vector3 b = refPoints[i + 1];
-			if (i == 0)
-			{
-				if(refPoints.Length == 2)
-				{
-					AddLinearBezierCurve(a, b);
-					continue;
-				}
-				AddQuadraticBezierCurve(a, b, getFirstSupportVec(refPoints, i + 1));
-				continue;
-			}
-			if(i == refPoints.Length - 2)
-			{
-				AddQuadraticBezierCurve(a, b, getSecondSupportVec(refPoints, i));
-				continue;
-			}
-
-			Tuple<Vector3, Vector3> aSupportVecs = getSupportVecs(refPoints, i);
-			Tuple<Vector3, Vector3> bSupportVecs = getSupportVecs(refPoints, i + 1);
-
-			AddCubicBezierCurve(a, aSupportVecs.Item2, b, bSupportVecs.Item1);//
+			AddLinearBezierCurve(pointList[0], pointList[1]);
+			return;
 		}
+		if (pointList.Count == 3)
+		{
+			lineRenderer.positionCount = 0;
+			AddQuadraticBezierCurve(pointList[0], pointList[1], getFirstSupportVec(pointList, 1));
+			AddQuadraticBezierCurve(pointList[1], pointList[2], getSecondSupportVec(pointList, 1));
+			return;
+		}
+		lineRenderer.positionCount -= resolution + 1;
+		AddCubicBezierCurve(pointList[pointList.Count - 3], getSecondSupportVec(pointList, pointList.Count - 3), pointList[pointList.Count - 2], getFirstSupportVec(pointList, pointList.Count - 2));
+		AddQuadraticBezierCurve(pointList[pointList.Count - 2], pointList[pointList.Count - 1], getSecondSupportVec(pointList, pointList.Count - 2));
 	}
 
 	Tuple<Vector3, Vector3> getSupportVecs(Vector3[] points, int index)
@@ -84,9 +49,9 @@ public class PaintChalk : MonoBehaviour
 		return new Tuple<Vector3, Vector3>(points[index] - tangent / 3 * prevToPosLength, points[index] + tangent / 3 * posToNextLength);
 	}
 
-	Vector3 getFirstSupportVec(Vector3[] points, int index)
+	Vector3 getFirstSupportVec(List<Vector3> points, int index)
 	{
-		if (index <= 0 || index > points.Length - 1)
+		if (index <= 0 || index > points.Count - 1)
 		{
 			throw new ArgumentException("illegal index");
 		}
@@ -98,9 +63,9 @@ public class PaintChalk : MonoBehaviour
 		return points[index] - tangent / 3 * prevToPosLength;
 	}
 
-	Vector3 getSecondSupportVec(Vector3[] points, int index)
+	Vector3 getSecondSupportVec(List<Vector3> points, int index)
 	{
-		if (index < 0 || index >= points.Length - 1)
+		if (index < 0 || index >= points.Count - 1)
 		{
 			throw new ArgumentException("illegal index");
 		}
@@ -112,11 +77,11 @@ public class PaintChalk : MonoBehaviour
 		return points[index] + tangent / 3 * posToNextLength;
 	}
 
-	Vector3 getTangent(Vector3[] points, int index)
+	Vector3 getTangent(List<Vector3> points, int index)
 	{
 		if(index != 0)
 		{
-			if (index != points.Length - 1)
+			if (index != points.Count - 1)
 			{
 				Vector3 prevToPos = points[index] - points[index - 1];
 				prevToPos.Normalize();
@@ -186,4 +151,18 @@ public class PaintChalk : MonoBehaviour
 	{
 		return Mathf.Pow(1-t, 3) * a + 3 * Mathf.Pow(1-t,2) * t * aSupp + 3 * (1 - t) * Mathf.Pow(t, 2) * bSupp + Mathf.Pow(t, 3) * b;
 	}
+
+
+	private LineRenderer lineRenderer;
+
+	private List<Vector3> pointList;
+
+	public PaintChalk()
+	{
+		lineRenderer = new LineRenderer();
+		//lineRenderer.transform.rotation.Set(90, 0, 0, 0);
+		//lineRenderer.alignment = LineAlignment.TransformZ;
+		pointList = new List<Vector3>();
+	}
+
 }
