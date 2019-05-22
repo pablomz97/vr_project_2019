@@ -10,21 +10,25 @@ public class ControllerInputTest : MonoBehaviour
 	public SteamVR_Action_Boolean action;
 
 
-	private PaintChalk chalk = new PaintChalk();
+	private PaintChalk chalk;
 
-	void OnEnable()
+	void Start()
 	{
+		chalk = new PaintChalk();
 		action.AddOnStateDownListener(OnTriggerPressed, handType);
+		Debug.Log("Added listener");
 	}
 
-	void OnDisable()
+	public void OnTriggerPressed(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
 	{
-		action.RemoveOnStateDownListener(OnTriggerPressed, handType);
-	}
 
-	private void OnTriggerPressed(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
-	{
-		chalk.AddPoint(new Vector3(Random.Range(-2, 2), 0.01f, Random.Range(-2, 2)));
+		if(chalk == null){
+			chalk = new PaintChalk();
+			action.AddOnStateDownListener(OnTriggerPressed, handType);
+			Debug.Log("Added listener");
+		}
+
+		chalk.AddPoint(new Vector3(Random.Range(-5, 5), 0.01f, Random.Range(-5, 5)));
 		Debug.Log("Trigger was pressed");
 	}
 

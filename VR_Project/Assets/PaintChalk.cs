@@ -5,13 +5,36 @@ using System.Collections.Generic;
 public class PaintChalk
 {
 
-	public int resolution;
+	public int resolution = 20;
+	
+	private LineRenderer lineRenderer;
+
+	private List<Vector3> pointList;
+
+	public PaintChalk()
+	{
+		Debug.Log("initialize line renderer");
+		lineRenderer = (new GameObject("chalkLine")).AddComponent<LineRenderer>();
+		lineRenderer.positionCount = 0;
+		pointList = new List<Vector3>();
+	}
+
+	void Init(){
+		lineRenderer.transform.eulerAngles = new Vector3(90, 0, 0);
+		lineRenderer.alignment = LineAlignment.TransformZ;
+		lineRenderer.widthMultiplier = 0.15f;
+	}
+
 
 	public void AddPoint(Vector3 point)
 	{
+		if(lineRenderer.alignment != LineAlignment.TransformZ)
+			Init();
+
 		pointList.Add(point);
-		if (pointList.Count < 2)
+		if (pointList.Count < 2){
 			return;
+		}
 
 		if (pointList.Count == 2)
 		{
@@ -152,17 +175,5 @@ public class PaintChalk
 		return Mathf.Pow(1-t, 3) * a + 3 * Mathf.Pow(1-t,2) * t * aSupp + 3 * (1 - t) * Mathf.Pow(t, 2) * bSupp + Mathf.Pow(t, 3) * b;
 	}
 
-
-	private LineRenderer lineRenderer;
-
-	private List<Vector3> pointList;
-
-	public PaintChalk()
-	{
-		lineRenderer = new LineRenderer();
-		//lineRenderer.transform.rotation.Set(90, 0, 0, 0);
-		//lineRenderer.alignment = LineAlignment.TransformZ;
-		pointList = new List<Vector3>();
-	}
 
 }

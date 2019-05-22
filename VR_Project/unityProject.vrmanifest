@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.vr_project.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\Manuel\\Uni\\VR_AR\\vr_project_2019\\VR_Project\\actions.json",
+      "action_manifest_path": "C:\\Users\\Predator1\\Desktop\\github-desktop-repo\\vr_project_2019\\VR_Project\\actions.json",
       "strings": {
         "en_us": {
           "name": "VR_Project [Testing]"
