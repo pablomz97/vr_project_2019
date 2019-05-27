@@ -1,18 +1,25 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Valve.VR;
 
 public class PaintChalk
 {
 
-	public int resolution = 20;
+	public int resolution = 5;
+
+	public float minDistance = 0.025f;
+
+
+	private SteamVR_Action_Vibration hapticAction;
 	
 	private LineRenderer lineRenderer;
 
 	private List<Vector3> pointList;
 
-	public PaintChalk()
+	public PaintChalk(SteamVR_Action_Vibration hapticAction)
 	{
+		this.hapticAction = hapticAction;
 		Debug.Log("initialize line renderer");
 		lineRenderer = (new GameObject("chalkLine")).AddComponent<LineRenderer>();
 		lineRenderer.positionCount = 0;
@@ -22,11 +29,21 @@ public class PaintChalk
 	void Init(){
 		lineRenderer.transform.eulerAngles = new Vector3(90, 0, 0);
 		lineRenderer.alignment = LineAlignment.TransformZ;
-		lineRenderer.widthMultiplier = 0.15f;
+		lineRenderer.widthMultiplier = 0.03f;
 	}
 
 
-	public void AddPoint(Vector3 point)
+	public void Add(Vector3 point){
+		if(lineRenderer.positionCount == 0 || (pointList[pointList.Count - 1] - point).magnitude >= minDistance){
+			Debug.Log(point.y);
+			if(point.y < 0.20f){
+				point.y = 0.01f;
+				AddPoint(point);
+			}
+		}
+	}
+
+	private void AddPoint(Vector3 point)
 	{
 		if(lineRenderer.alignment != LineAlignment.TransformZ)
 			Init();
