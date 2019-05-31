@@ -7,11 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_Rock_01
+  m_Name: M_Rock_03
   m_Shader: {fileID: 4800000, guid: 5735f2100e13cd14aa21fd8e2d36a89d, type: 3}
   m_ShaderKeywords: _NORMALMAP
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -20,16 +20,16 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AoMap:
-        m_Texture: {fileID: 2800000, guid: 687eb4015d0e14144a5cae933ced886d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4dc32ac7c38947047aa689ec5464e17d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 193c3cea9de255748bd4dcc763e224bc, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7547891a5ab505b4199e1f9b65773ae4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 8, y: 8}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailMask:
         m_Texture: {fileID: 0}
@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f62cf6aba51fcae43b2ec8a90657696b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0131d08dd1882f0409b6eb0a2fb8d806, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -56,7 +56,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
-        m_Texture: {fileID: 2800000, guid: 687eb4015d0e14144a5cae933ced886d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4dc32ac7c38947047aa689ec5464e17d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -72,14 +72,14 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EmInt: 0
+    - _EmInt: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0.058
+    - _Glossiness: 0
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _Parallax: 0.005
+    - _Parallax: 0.02
     - _RimInt: 0
     - _RimPower: 3
     - _SmoothnessTextureChannel: 0
