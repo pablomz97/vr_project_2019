@@ -17,7 +17,8 @@ public class HexagonImagesGenerator : EditorWindow
     FindAllHexagons();
     RefreshDropdown();
 
-    if (GUILayout.Button("Move To Selected Hexagon", buttonStyle)) {
+    if (GUILayout.Button("Move To Selected Hexagon", buttonStyle))
+    {
       FocusSelectedHexagon();
       SceneView.FrameLastActiveSceneView();
     }
