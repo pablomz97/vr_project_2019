@@ -25,6 +25,36 @@ public class HexagonImagesGenerator : EditorWindow
 
     EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, 1), Color.gray);
 
+    if (GUILayout.Button("Render Image from Selected Hexagon", buttonStyle))
+    {
+      GameObject cameraHolder = new GameObject();
+      Camera camera = cameraHolder.AddComponent<Camera>();
+      RenderTexture renderTexture = new RenderTexture(1920, 1080, 24);
+
+      camera.targetTexture = renderTexture;
+      camera.transform.localPosition = (hexagons[selectedHexagonIndex] as GameObject).transform.position + new Vector3(0, 10, 0);
+
+      Texture2D screenshot = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+
+      camera.Render();
+
+      RenderTexture.active = renderTexture;
+
+      screenshot.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0);
+
+      camera.targetTexture = null;
+      RenderTexture.active = null;
+
+      DestroyImmediate(renderTexture);
+
+      byte[] bytes = screenshot.EncodeToPNG();
+      string filename = "test.png";
+
+      System.IO.File.WriteAllBytes(filename, bytes);
+
+      // DestroyImmediate(camera);
+    }
+
     FocusSelectedHexagon();
   }
 
