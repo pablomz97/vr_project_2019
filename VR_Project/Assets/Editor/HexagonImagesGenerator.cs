@@ -27,32 +27,48 @@ public class HexagonImagesGenerator : EditorWindow
 
     if (GUILayout.Button("Render Image from Selected Hexagon", buttonStyle))
     {
-      GameObject cameraHolder = new GameObject();
+      RenderImageFromSelectedHexagon();
+
+      // ---
+
+      /* GameObject.FindObjectsOfType<Light>().ToList().ForEach(lightSource => lightSource.enabled = false);
+
+      GameObject imageRenderer = new GameObject();
+
+      Camera camera = imageRenderer.AddComponent<Camera>();
+      Light light = imageRenderer.AddComponent<Light>();
+
+      camera.orthographic = true;
+      light.range = 100;
+
+      imageRenderer.transform.position = currentlySelectedHexagon.transform.position + new Vector3(0, 7.5f, 0); */
+
+      /* GameObject cameraHolder = new GameObject();
       Camera camera = cameraHolder.AddComponent<Camera>();
       RenderTexture renderTexture = new RenderTexture(1920, 1080, 24);
 
       camera.targetTexture = renderTexture;
       camera.transform.localPosition = (hexagons[selectedHexagonIndex] as GameObject).transform.position + new Vector3(0, 10, 0);
 
-      Texture2D screenshot = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+      // Texture2D screenshot = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
 
       camera.Render();
 
       RenderTexture.active = renderTexture;
 
-      screenshot.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0);
+      // screenshot.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0);
 
       camera.targetTexture = null;
       RenderTexture.active = null;
 
-      DestroyImmediate(renderTexture);
+      DestroyImmediate(renderTexture); */
 
-      byte[] bytes = screenshot.EncodeToPNG();
+      /* byte[] bytes = screenshot.EncodeToPNG();
       string filename = "test.png";
 
       System.IO.File.WriteAllBytes(filename, bytes);
 
-      // DestroyImmediate(camera);
+      DestroyImmediate(camera); */
     }
 
     FocusSelectedHexagon();
@@ -85,6 +101,58 @@ public class HexagonImagesGenerator : EditorWindow
   private void FocusSelectedHexagon()
   {
     Selection.activeGameObject = (hexagons[selectedHexagonIndex] as GameObject).gameObject;
+  }
+
+  private void RenderImageFromSelectedHexagon()
+  {
+    GameObject currentlySelectedHexagon = hexagons[selectedHexagonIndex] as GameObject;
+    Renderer[] currentlySelectedHexagonChildren = currentlySelectedHexagon.GetComponentsInChildren<Renderer>();
+
+    Renderer[] gameObjectsToHide = GameObject.FindObjectsOfType<Renderer>()
+                                    .Except(
+                                      new Renderer[] { currentlySelectedHexagon.GetComponent<Renderer>() }
+                                        .Union(currentlySelectedHexagonChildren)
+                                    )
+                                    .ToArray();
+
+    HideGameObjects(gameObjectsToHide);
+
+    Renderer[] hiddenHexagonChildren = RevealPathOfHexagon(currentlySelectedHexagon, currentlySelectedHexagonChildren);
+
+    ShowGameObjects(gameObjectsToHide.Union(hiddenHexagonChildren).ToArray());
+  }
+
+  private void HideGameObjects(Renderer[] gameObjectsToHide)
+  {
+    foreach (Renderer renderer in gameObjectsToHide)
+    {
+      renderer.enabled = false;
+    }
+  }
+
+  private Renderer[] RevealPathOfHexagon(GameObject hexagon, Renderer[] hexagonChildren)
+  {
+    List<Renderer> hiddenHexagonChildren = new List<Renderer>();
+
+    foreach (Renderer renderer in hexagonChildren)
+    {
+      if (renderer.gameObject != hexagon.gameObject && renderer.transform.position.y - 1 > hexagon.transform.position.y)
+      {
+        renderer.enabled = false;
+
+        hiddenHexagonChildren.Add(renderer);
+      }
+    }
+
+    return hiddenHexagonChildren.ToArray();
+  }
+
+  private void ShowGameObjects(Renderer[] gameObjectsToShow)
+  {
+    foreach (Renderer renderer in gameObjectsToShow)
+    {
+      renderer.enabled = true;
+    }
   }
 
   [MenuItem("Hexagon Images/Generator")]
