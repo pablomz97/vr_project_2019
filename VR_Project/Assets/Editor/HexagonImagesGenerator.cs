@@ -70,7 +70,7 @@ public class HexagonImagesGenerator : EditorWindow
   private void FindAllHexagons()
   {
     hexagons = GameObject.FindObjectsOfType(typeof(GameObject))
-                          .Where(gameObject => gameObject.name.Contains("hex_base"))
+                          .Where(gameObject => gameObject.name.IndexOf("hex", System.StringComparison.OrdinalIgnoreCase) >= 0)
                           .ToArray();
   }
 
