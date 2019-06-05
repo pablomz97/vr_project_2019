@@ -1,11 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 public class HexagonImagesGenerator : EditorWindow
 {
-  private Object[] hexagons;
+  const int largeHexagonCircumRadius = 6;
+  const int smallHexagonCircumRadius = 4;
+  const string largeHexagonShaderName = "M_HexBase_12m";
+  const string smallHexagonShaderName = "M_HexBase_8m";
+
+  private UnityEngine.Object[] hexagons;
   private int selectedHexagonIndex = 0;
   private GUIStyle buttonStyle;
   private GUIStyle popupStyle;
@@ -28,47 +35,6 @@ public class HexagonImagesGenerator : EditorWindow
     if (GUILayout.Button("Render Image from Selected Hexagon", buttonStyle))
     {
       RenderImageFromSelectedHexagon();
-
-      // ---
-
-      /* GameObject.FindObjectsOfType<Light>().ToList().ForEach(lightSource => lightSource.enabled = false);
-
-      GameObject imageRenderer = new GameObject();
-
-      Camera camera = imageRenderer.AddComponent<Camera>();
-      Light light = imageRenderer.AddComponent<Light>();
-
-      camera.orthographic = true;
-      light.range = 100;
-
-      imageRenderer.transform.position = currentlySelectedHexagon.transform.position + new Vector3(0, 7.5f, 0); */
-
-      /* GameObject cameraHolder = new GameObject();
-      Camera camera = cameraHolder.AddComponent<Camera>();
-      RenderTexture renderTexture = new RenderTexture(1920, 1080, 24);
-
-      camera.targetTexture = renderTexture;
-      camera.transform.localPosition = (hexagons[selectedHexagonIndex] as GameObject).transform.position + new Vector3(0, 10, 0);
-
-      // Texture2D screenshot = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
-
-      camera.Render();
-
-      RenderTexture.active = renderTexture;
-
-      // screenshot.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0);
-
-      camera.targetTexture = null;
-      RenderTexture.active = null;
-
-      DestroyImmediate(renderTexture); */
-
-      /* byte[] bytes = screenshot.EncodeToPNG();
-      string filename = "test.png";
-
-      System.IO.File.WriteAllBytes(filename, bytes);
-
-      DestroyImmediate(camera); */
     }
 
     FocusSelectedHexagon();
@@ -77,7 +43,7 @@ public class HexagonImagesGenerator : EditorWindow
   private void SetStyles()
   {
     buttonStyle = new GUIStyle(GUI.skin.button);
-    buttonStyle.margin = new RectOffset(15, 15, 10, 15);
+    buttonStyle.margin = new RectOffset(15, 15, 15, 15);
 
     popupStyle = new GUIStyle(EditorStyles.popup);
     popupStyle.margin = new RectOffset(15, 15, 15, 15);
@@ -110,6 +76,7 @@ public class HexagonImagesGenerator : EditorWindow
     GameObject currentlySelectedHexagon = hexagons[selectedHexagonIndex] as GameObject;
     Renderer[] currentlySelectedHexagonChildren = currentlySelectedHexagon.GetComponentsInChildren<Renderer>();
 
+    Renderer[] hiddenHexagonChildren = RevealPathOfHexagon(currentlySelectedHexagon, currentlySelectedHexagonChildren);
     Renderer[] gameObjectsToHide = GameObject.FindObjectsOfType<Renderer>()
                                     .Except(
                                       new Renderer[] { currentlySelectedHexagon.GetComponent<Renderer>() }
@@ -117,11 +84,15 @@ public class HexagonImagesGenerator : EditorWindow
                                     )
                                     .ToArray();
 
+    PrepareScene(gameObjectsToHide);
+    RenderImage(currentlySelectedHexagon);
+    RestoreScene(hiddenHexagonChildren.Union(gameObjectsToHide).ToArray());
+  }
+
+  private void PrepareScene(Renderer[] gameObjectsToHide)
+  {
     HideGameObjects(gameObjectsToHide);
-
-    Renderer[] hiddenHexagonChildren = RevealPathOfHexagon(currentlySelectedHexagon, currentlySelectedHexagonChildren);
-
-    ShowGameObjects(gameObjectsToHide.Union(hiddenHexagonChildren).ToArray());
+    HideAllLights();
   }
 
   private void HideGameObjects(Renderer[] gameObjectsToHide)
@@ -130,6 +101,34 @@ public class HexagonImagesGenerator : EditorWindow
     {
       renderer.enabled = false;
     }
+  }
+
+  private void HideAllLights()
+  {
+    GameObject.FindObjectsOfType<Light>()
+              .ToList()
+              .ForEach(lightSource => lightSource.enabled = false);
+  }
+
+  private void RestoreScene(Renderer[] hiddenGameObjects)
+  {
+    ShowGameObjects(hiddenGameObjects);
+    ShowAllLights();
+  }
+
+  private void ShowGameObjects(Renderer[] gameObjectsToShow)
+  {
+    foreach (Renderer renderer in gameObjectsToShow)
+    {
+      renderer.enabled = true;
+    }
+  }
+
+  private void ShowAllLights()
+  {
+    GameObject.FindObjectsOfType<Light>()
+              .ToList()
+              .ForEach(lightSource => lightSource.enabled = true);
   }
 
   private Renderer[] RevealPathOfHexagon(GameObject hexagon, Renderer[] hexagonChildren)
@@ -150,17 +149,72 @@ public class HexagonImagesGenerator : EditorWindow
     return hiddenHexagonChildren.ToArray();
   }
 
-  private void ShowGameObjects(Renderer[] gameObjectsToShow)
+  private void RenderImage(GameObject hexagon)
   {
-    foreach (Renderer renderer in gameObjectsToShow)
+    float hexagonalAspectRatio = Mathf.Sqrt(3) / 2;
+    int height = 1920;
+    int width = System.Convert.ToInt32(height * hexagonalAspectRatio);
+
+    GameObject imageRenderer = new GameObject();
+    Camera camera = imageRenderer.AddComponent<Camera>();
+    Light light = imageRenderer.AddComponent<Light>();
+    RenderTexture renderTexture = new RenderTexture(width, height, 24);
+    Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
+
+    camera.aspect = hexagonalAspectRatio;
+    camera.orthographic = true;
+    camera.orthographicSize = GetHexagonCircumRadius(hexagon);
+    camera.targetTexture = renderTexture;
+    camera.transform.Rotate(90, 180, 0);
+
+    light.range = 1000;
+
+    imageRenderer.transform.position = hexagon.transform.position + new Vector3(0, 7.5f, 0);
+
+    camera.Render();
+    RenderTexture.active = renderTexture;
+
+    screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+    SaveImage(hexagon.name, screenshot);
+
+    camera.targetTexture = null;
+    RenderTexture.active = null;
+    DestroyImmediate(screenshot);
+    DestroyImmediate(renderTexture);
+    DestroyImmediate(imageRenderer);
+  }
+
+  private int GetHexagonCircumRadius(GameObject hexagon)
+  {
+    string shaderName = hexagon.GetComponent<Renderer>().sharedMaterial.shader.name;
+
+    if (shaderName == largeHexagonShaderName)
     {
-      renderer.enabled = true;
+      return largeHexagonCircumRadius;
     }
+    else if (shaderName == smallHexagonShaderName)
+    {
+      return smallHexagonCircumRadius;
+    }
+    else
+    {
+      return largeHexagonCircumRadius;
+    }
+  }
+
+  private void SaveImage(string name, Texture2D screenshot)
+  {
+    byte[] bytes = screenshot.EncodeToPNG();
+    System.IO.FileInfo file = new System.IO.FileInfo($"Generated Map Images/{name}.png");
+
+    file.Directory.Create();
+
+    System.IO.File.WriteAllBytes(file.FullName, bytes);
   }
 
   [MenuItem("Hexagon Images/Generator")]
   public static void ShowWindow()
   {
-    GetWindow<HexagonImagesGenerator>(true, "Generate Map Images from Hexagons", true);
+    GetWindowWithRect<HexagonImagesGenerator>(new Rect(0, 0, 350, 130), true, "Generate Map Images from Hexagons", true);
   }
 }
