@@ -86,7 +86,9 @@ public class HexagonImagesGenerator : EditorWindow
   private void FindAllHexagons()
   {
     hexagons = GameObject.FindObjectsOfType(typeof(GameObject))
-                          .Where(gameObject => gameObject.name.IndexOf("hex", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                          .Where(gameObject => gameObject
+                                                .name
+                                                .IndexOf("hex", System.StringComparison.OrdinalIgnoreCase) >= 0)
                           .ToArray();
   }
 
@@ -136,7 +138,8 @@ public class HexagonImagesGenerator : EditorWindow
 
     foreach (Renderer renderer in hexagonChildren)
     {
-      if (renderer.gameObject != hexagon.gameObject && renderer.transform.position.y - 1 > hexagon.transform.position.y)
+      if (renderer.gameObject != hexagon.gameObject &&
+          renderer.transform.position.y - 1 > hexagon.transform.position.y)
       {
         renderer.enabled = false;
 
