@@ -4,7 +4,7 @@ using UnityEditor.SceneManagement;
 
 public class preBuildActions
 {
-  public static string[] scenes = { "Assets/Scenes/lightingTest.unity" };
+  public static string[] scenes = { "Assets/Scenes/caveTest.unity" };
 
   [MenuItem("Tools/Bake Scenes")]
   public static void buildLighting()
@@ -18,10 +18,12 @@ public class preBuildActions
         EditorSceneManager.OpenScene(scene);
         Lightmapping.ClearLightingDataAsset();
         Lightmapping.Bake();
+        StaticOcclusionCulling.Compute();
         //EditorSceneManager.MarkAllScenesDirty();
         EditorSceneManager.SaveOpenScenes();
     }
     Debug.Log("lighting build done, saving assets... ");
     AssetDatabase.SaveAssets();
+    Debug.Log("build finished");
   }
 }
