@@ -240,10 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f510de5dd4eba44b9c3761a470f10b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hexagonPrefabBasic: {fileID: 5555703303276715117, guid: 1ea06b49d18de2641b2e416e018d294c,
-    type: 3}
-  hexagonPrefabStraight: {fileID: 5555703303276715117, guid: 9a8b865cb6a23ca42a4103ec09e70b00,
-    type: 3}
+  hexagonPrefabs: []
 --- !u!4 &175349480
 Transform:
   m_ObjectHideFlags: 0

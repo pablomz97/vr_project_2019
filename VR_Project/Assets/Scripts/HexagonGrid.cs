@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,36 +10,69 @@ public class HexagonGrid : MonoBehaviour
     private Vector3 position; // position of the first tile's center
     private float tileDiam; // distance from an edge to the opposite edge by default
     public readonly bool vertexDistance = true; // use distance from vertex to vertex for tileDiam
-    private GameObject[,] hexagons;
-    public GameObject hexagonPrefabBasic;
-    public GameObject hexagonPrefabStraight;
+    private Hexagon[,] hexagons;
+   
 
     // Start is called before the first frame update
     void Start()
     {
+
+        // Load Hexagon prefabs
+        if (!Hexagon.prefabsLoaded)
+        {
+            Hexagon.prefabsLoaded = true;
+            GameObject[] hexagonPrefabs = Resources.LoadAll<GameObject>("HexagonPrefabs");
+            Hexagon.hexPrefabs = new SortedDictionary<int, List<Hexagon>>();
+            Hexagon.hexPrefabsUsageIndex = new SortedDictionary<int, int>();
+
+            // put hexagons in dictionary to allow easy access by exits.
+            foreach (GameObject hObj in hexagonPrefabs)
+            {
+                Hexagon h = hObj.GetComponent<Hexagon>();
+                List<Hexagon> hexagonsOfSameType;
+
+                // Check if list of hexagons already exists in dictionary
+                bool initialized = Hexagon.hexPrefabs.TryGetValue(h.Encoding, out hexagonsOfSameType);
+                if (initialized)
+                {
+                    hexagonsOfSameType.Add(h); //add hexagon
+                }
+                else
+                {
+                    //create new list containing the hexagon and add it
+                    hexagonsOfSameType = new List<Hexagon>();
+                    hexagonsOfSameType.Add(h);
+                    Hexagon.hexPrefabs.Add(h.Encoding, hexagonsOfSameType);
+                    Hexagon.hexPrefabsUsageIndex.Add(h.Encoding, 0); //initalize as not used so far
+                    Debug.Log("Encoding: " + Convert.ToString(h.Encoding, 2) + ", " + h.EncodeStart);
+                }
+            }
+        }
+
         gridWidth = 10;
         gridHeight = 10;
         tileDiam = 12.0f;
         position = transform.position;
 
-        hexagons = new GameObject[gridHeight, gridWidth];
+        hexagons = new Hexagon[gridHeight, gridWidth];
 
         for(int row = 0; row < gridHeight; row++)
         {
             for(int col = 0; col < gridWidth; col++)
             {
-                hexagons[row, col] = Hexagon.Create(hexagonPrefabStraight, this, row, col, Hexagon.Direction.Right);
+                Hexagon h = Hexagon.Create(Hexagon.Direction.TopLeft, Hexagon.Direction.BotRight);
+                SetHexagonAt(h, row, col);
             }
         }
 
         // Some tests for the data structure
 
-        Hexagon.Create(hexagonPrefabBasic, this, 2, 1, Hexagon.Direction.Right);
-        hexagons[2, 1].GetComponent<Hexagon>().GetNeighbor(Hexagon.Direction.TopRight).GetComponent<Hexagon>().Orientation = Hexagon.Direction.TopLeft;
+        SetHexagonAt(Hexagon.Create(), 2, 1);
+        //hexagons[2, 1].GetNeighbor(Hexagon.Direction.TopRight).Orientation = Hexagon.Direction.TopLeft;
 
         //hexagons[0, 0].GetComponent<Hexagon>().SetNeighbor(Hexagon.Direction.TopLeft, new GameObject());
 
-        if (hexagons[0,0].GetComponent<Hexagon>().GetNeighbor(Hexagon.Direction.Left) == null)
+        if (hexagons[0,0].GetNeighbor(Hexagon.Direction.Left) == null)
         {
             Debug.Log("It has been detected that the object does not exist.");
         }
@@ -54,9 +88,31 @@ public class HexagonGrid : MonoBehaviour
         
     }
 
-    public GameObject[,] Hexagons
+    public Hexagon GetHexagonAt(int row, int col)
     {
-        get{ return hexagons; }
+        return hexagons[row, col];
+    }
+
+    public void SetHexagonAt(Hexagon h, int row, int col)
+    {
+        h.controlGrid = this;
+        h.rowIndex = row;
+        h.colIndex = col;
+        h.gameObject.transform.position = h.CalcPosition();
+
+        if (vertexDistance)
+        {
+            h.gameObject.transform.localScale *= Mathf.Sqrt(4.0f / 3.0f);
+        }
+
+        // We change the reference before destroying the old object so there can never be a null reference
+        Hexagon old = hexagons[row, col];
+        hexagons[row, col] = h;
+
+        if (old != null)
+        {
+            Destroy(old.gameObject);
+        }
     }
 
     public int GridWidth
