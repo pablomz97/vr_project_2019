@@ -226,7 +226,12 @@ public class HexagonImagesGenerator : EditorWindow
       RenderTexture renderTexture = new RenderTexture(width, height, 24);
       Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
+      imageRenderer.AddComponent<DepthCamera>();
+
       camera.aspect = hexagonalAspectRatio;
+      camera.depthTextureMode = DepthTextureMode.Depth;
+      camera.farClipPlane = 7.5f;
+      camera.nearClipPlane = 0f;
       camera.orthographic = true;
       camera.orthographicSize = this.CircumRadius;
       camera.targetTexture = renderTexture;
