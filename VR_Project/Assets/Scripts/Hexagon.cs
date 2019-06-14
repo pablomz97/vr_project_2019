@@ -5,17 +5,29 @@ using UnityEngine;
 
 public class Hexagon : MonoBehaviour
 {
-    public enum Direction { Right, TopRight, TopLeft, Left, BotLeft, BotRight};
-    public int rowIndex;
-    public int colIndex;
+    public enum Direction { Right, TopRight, TopLeft, Left, BotLeft, BotRight };
+    public int rowIndex = -1;
+    public int colIndex = -1;
     public HexagonGrid controlGrid;
-    private Direction orientation = Direction.Right;
+    public Direction orientation = Direction.Right;
     public bool[] hasExit = new bool[6]; // do not change at runtime!!! readonly is not possible because we want this to be editable in Unity
+    private byte encoding = 0xFF;
+    private Direction encodeStart;
+
+    public static SortedDictionary<int, List<Hexagon>> hexPrefabs;
+    public static SortedDictionary<int, int> hexPrefabsUsageIndex;
+    public static readonly int MAX_DUPLICATE_TILES = 100;
+    public static bool prefabsLoaded = false;
+
+    static Hexagon()
+    {
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        //(encoding, encodeStart) = ExitArrayToEncoding(hasExit);
     }
 
     // Update is called once per frame
@@ -119,21 +131,21 @@ public class Hexagon : MonoBehaviour
         return (-1,-1);
     }
 
-    public GameObject GetNeighbor(Direction d)
+    public Hexagon GetNeighbor(Direction d)
     {
         (int, int) index = GetNeighborIndex(d);
 
         if(index != (-1,-1))
         {
-            return controlGrid.Hexagons[index.Item1,index.Item2];
+            return controlGrid.GetHexagonAt(index.Item1,index.Item2);
         }
         return null;
     }
 
-    public void SetNeighbor(Direction d, GameObject hexagon)
+    public void SetNeighbor(Direction d, Hexagon hexagon)
     {
         //TODO: update properties and delete old object
-        if(hexagon.GetComponent<Hexagon>() == null)
+        if(hexagon == null)
         {
             throw new ArgumentException("Object is not a hexagon.");
         }
@@ -141,7 +153,7 @@ public class Hexagon : MonoBehaviour
 
         if (index != (-1, -1))
         {
-            controlGrid.Hexagons[index.Item1, index.Item2] = hexagon;
+            controlGrid.SetHexagonAt(hexagon, index.Item1, index.Item2);
         }
 
         throw new ArgumentOutOfRangeException("Neighbor does not exist.");
@@ -175,39 +187,89 @@ public class Hexagon : MonoBehaviour
         }
     }
 
-    public static GameObject Create(GameObject prefabHexagon, HexagonGrid controlGrid, int rowIndex, int colIndex, Direction orientation)
+    public byte Encoding
+    {
+        get
+        {
+            if (encoding == 0xFF)
+            {
+                (encoding, encodeStart) = ExitArrayToEncoding(hasExit);
+            }
+            return encoding;
+        }
+    }
+
+    public Direction EncodeStart => encodeStart;
+
+    public static Hexagon Create(params Hexagon.Direction[] exits)
+    {
+        // calculate encoding:
+        bool[] hasExit = new bool[6];
+
+        foreach (Hexagon.Direction exit in exits)
+        {
+            hasExit[(int)exit] = true;
+        }
+
+        (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
+
+        List<Hexagon> hexagonOfType;
+        bool success = hexPrefabs.TryGetValue(encoding, out hexagonOfType);
+        //Debug.Log("Success: " + success);
+        hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
+        if(offset / hexagonOfType.Count >= MAX_DUPLICATE_TILES)
+        {
+            throw new Exception("Maximum amount of instances from the same prefab has been exceeded");
+        }
+        Hexagon prefab = hexagonOfType[offset % hexagonOfType.Count];
+        hexPrefabsUsageIndex.Remove(encoding);
+        hexPrefabsUsageIndex.Add(encoding, offset + 1);
+
+        Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
+        Debug.Log("dir: " + dir + " EncodeStart: " + prefab.EncodeStart + " RelDir: " + relDir);
+
+        return Hexagon.Create(prefab.gameObject, relDir);
+    }
+        public static Hexagon Create(GameObject prefabHexagon, Direction orientation)
     {
         if (prefabHexagon.GetComponent<Hexagon>() == null)
         {
             throw new ArgumentException("Object is not a hexagon.");
         }
 
+
         GameObject hObj = Instantiate(prefabHexagon, new Vector3(0, 0, 0), Quaternion.identity);
         Hexagon h = hObj.GetComponent<Hexagon>();
-        h.controlGrid = controlGrid;
-        h.rowIndex = rowIndex;
-        h.colIndex = colIndex;
-
-        hObj.transform.position = h.CalcPosition();
-
         // The Prefab rotation is dropped so we need to set it again
-        hObj.transform.rotation = Quaternion.Euler(-90, 0, 0);
-
-        if (controlGrid.vertexDistance)
-        {
-            hObj.transform.localScale *= Mathf.Sqrt(4.0f / 3.0f);
-        }
-
+        h.gameObject.transform.rotation = Quaternion.Euler(-90, 0, 0);
         h.Orientation = orientation;
 
-        // We change the reference before destroying the old object so there can never be a null reference
-        GameObject old = controlGrid.Hexagons[rowIndex, colIndex];
-        controlGrid.Hexagons[rowIndex, colIndex] = hObj;
+        return h;
+    }
 
-        if (old != null)
+
+
+    public static (byte, Direction) ExitArrayToEncoding(bool[] hasExit)
+    {
+        byte encoding = 0xFF;
+        Direction d = Direction.Right;
+
+        for(int i = 0; i < hasExit.Length; i++) // iterate through all possible starting points
         {
-            Destroy(old);
+            byte temp = 0;
+            for(int j = 0; j < hasExit.Length; j++) //concatenate booleans
+            {
+                temp |= (byte)(Convert.ToByte(hasExit[(j + i) % hasExit.Length]) << (hasExit.Length - j - 1));
+                
+            }
+           // Debug.Log("Encoding starting at " + (Direction)i + ": " + Convert.ToString(temp, 2));
+            if (temp < encoding)
+            {
+                encoding = temp;
+                d = (Direction)i;
+            }
         }
-        return hObj;
+
+        return (encoding, d);
     }
 }
