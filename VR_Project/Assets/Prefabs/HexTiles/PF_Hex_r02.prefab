@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 7017377114473725960}
   - component: {fileID: 212031156645654699}
   m_Layer: 0
-  m_Name: Reflection Probe
+  m_Name: ReflectionProbe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

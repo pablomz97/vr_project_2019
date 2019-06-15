@@ -15,4 +15,13 @@ public class staticBatchOnLoad : MonoBehaviour
     {
         
     }
+
+    //updates all static data which can be updated at runtime, this should be called once all objects have been placed at their final location
+    void bake()
+    {
+      ReflectionProbe probeComponent = gameObject.transform.Find("ReflectionProbe").gameObject.GetComponent<ReflectionProbe>();
+
+      if (probeComponent != null)
+        probeComponent.RenderProbe();
+    }
 }
