@@ -18,7 +18,7 @@ public class preBuildActions
         EditorSceneManager.OpenScene(scene);
         Lightmapping.ClearLightingDataAsset();
         Lightmapping.Bake();
-        StaticOcclusionCulling.Compute();
+        //StaticOcclusionCulling.Compute();
         //EditorSceneManager.MarkAllScenesDirty();
         EditorSceneManager.SaveOpenScenes();
     }
