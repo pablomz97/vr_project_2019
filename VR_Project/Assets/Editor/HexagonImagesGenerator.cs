@@ -287,7 +287,7 @@ public class HexagonImagesGenerator : EditorWindow
       foreach (Renderer renderer in Children)
       {
         if (renderer.gameObject != this.GameObject &&
-            renderer.transform.position.y - 1 > this.GameObject.transform.position.y ||
+            renderer.transform.position.y - 1.25 > this.GameObject.transform.position.y ||
             renderer.gameObject.name.IndexOf("shroom", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
             renderer.gameObject.name.IndexOf("crystal", System.StringComparison.OrdinalIgnoreCase) >= 0)
         {
