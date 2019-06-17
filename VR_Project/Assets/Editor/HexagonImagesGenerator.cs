@@ -55,10 +55,7 @@ public class HexagonImagesGenerator : EditorWindow
 
   private void FindAllHexagons()
   {
-    hexagons = GameObject.FindObjectsOfType(typeof(GameObject))
-                          .Where(gameObject => gameObject
-                                                .name
-                                                .IndexOf("hex", System.StringComparison.OrdinalIgnoreCase) >= 0)
+    hexagons = GameObject.FindGameObjectsWithTag("Hexagon")
                           .Select(gameObject => new Hexagon(gameObject))
                           .ToArray();
   }
@@ -140,6 +137,19 @@ public class HexagonImagesGenerator : EditorWindow
               .ForEach(lightSource => lightSource.enabled = true);
   }
 
+  public static GameObject GetChildWithTag(GameObject parent, string tag)
+  {
+    for (int i = 0; i < parent.transform.childCount; i++)
+    {
+      if (parent.transform.GetChild(i).tag.CompareTo(tag) == 0)
+      {
+        return parent.transform.GetChild(i).gameObject;
+      }
+    }
+
+    return null;
+  }
+
   [MenuItem("Hexagon Images/Generator")]
   public static void ShowWindow()
   {
@@ -170,7 +180,9 @@ public class HexagonImagesGenerator : EditorWindow
         const int smallHexagonCircumRadius = 4;
         const string largeHexagonShaderName = "M_HexBase_12m";
         const string smallHexagonShaderName = "M_HexBase_8m";
-        string shaderName = this.GameObject.GetComponent<Renderer>().sharedMaterial.shader.name;
+
+        GameObject hexagonPlatform = GetChildWithTag(this.GameObject, "HexagonPlatform") ?? this.GameObject;
+        string shaderName = hexagonPlatform.GetComponent<Renderer>().sharedMaterial.shader.name;
 
         if (shaderName == largeHexagonShaderName)
         {
