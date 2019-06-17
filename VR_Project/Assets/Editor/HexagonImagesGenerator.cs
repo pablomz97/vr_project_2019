@@ -75,13 +75,13 @@ public class HexagonImagesGenerator : EditorWindow
     hexagons = GameObject.FindGameObjectsWithTag("Hexagon")
                           .Select(gameObject => new Hexagon(gameObject))
                           .ToArray();
+
+    Array.Sort(hexagons, (firstHexagon, secondHexagon) => String.Compare(firstHexagon.Name, secondHexagon.Name));
   }
 
   private void RefreshDropdown()
   {
     string[] hexagonNames = hexagons.Select(hexagon => hexagon.Name).ToArray();
-
-    Array.Sort(hexagonNames, (firstName, secondName) => String.Compare(firstName, secondName));
 
     selectedHexagonIndex = EditorGUILayout.Popup("Available Hexagons",
                                                   selectedHexagonIndex,
