@@ -32,6 +32,15 @@ public class HexagonImagesGenerator : EditorWindow
       RenderImageOfSelectedHexagon();
     }
 
+    if (GUILayout.Button("Render Images of all Hexagons", buttonStyle))
+    {
+      for (int i = 0; i < hexagons.Length; i++)
+      {
+        selectedHexagonIndex = i;
+        RenderImageOfSelectedHexagon();
+      }
+    }
+
     hexagons[selectedHexagonIndex].Focus();
   }
 
