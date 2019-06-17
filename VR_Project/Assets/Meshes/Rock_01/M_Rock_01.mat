@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Rock_01
-  m_Shader: {fileID: 4800000, guid: 5735f2100e13cd14aa21fd8e2d36a89d, type: 3}
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -20,7 +20,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AoMap:
-        m_Texture: {fileID: 2800000, guid: 687eb4015d0e14144a5cae933ced886d, type: 3}
+        m_Texture: {fileID: 2800000, guid: ae2d2828609537b46b53d79edf9bd72d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -48,8 +48,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: b2c4c247e8c37734bb0c634ff5e93c29, type: 3}
-        m_Scale: {x: 4, y: 4}
+        m_Texture: {fileID: 2800000, guid: f62cf6aba51fcae43b2ec8a90657696b, type: 3}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -64,7 +64,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SmMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f57ded0ad7ddc47438336beb3c477655, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -74,7 +74,7 @@ Material:
     - _DstBlend: 0
     - _EmInt: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0.058
+    - _Glossiness: 0.17
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0

@@ -20,7 +20,7 @@
     Tags{ "RenderType" = "Opaque" }
 
     CGPROGRAM
-#pragma surface surf Standard 
+#pragma surface surf Standard fullforwardshadows
 
     struct Input {
 
