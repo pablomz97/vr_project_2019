@@ -8,6 +8,7 @@ public class staticBatchOnLoad : MonoBehaviour
     void Start()
     {
       StaticBatchingUtility.Combine(gameObject);
+      Bake();
     }
 
     // Update is called once per frame
