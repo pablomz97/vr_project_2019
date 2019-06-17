@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 3a3e422fc24b6134e91bb9b5c304038b
+=======
+<<<<<<< HEAD:VR_Project/Assets/Materials/Chalk.meta
+guid: a9a6a1deddfb70146bc90253a73ed453
+=======
+guid: 3a3e422fc24b6134e91bb9b5c304038b
+>>>>>>> 4d38186c6369bf3f6d18705677b8e5e2bc978cc7:VR_Project/Assets/Resources.meta
+>>>>>>> 4d38186c6369bf3f6d18705677b8e5e2bc978cc7
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
