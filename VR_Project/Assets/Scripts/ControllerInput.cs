@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
 
-public class ControllerInputTest : MonoBehaviour
+public class ControllerInput : MonoBehaviour
 {
 
 	public SteamVR_Input_Sources handType;
