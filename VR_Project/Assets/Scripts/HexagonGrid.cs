@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class HexagonGrid : MonoBehaviour
 {
-    private int gridWidth; // amount of tiles in x-direction
-    private int gridHeight; // amount of tiles in y-direction
+    private int gridWidth = 10; // amount of tiles in x-direction
+    private int gridHeight = 10; // amount of tiles in y-direction
     private Vector3 position; // position of the first tile's center
-    private float tileDiam; // distance from an edge to the opposite edge by default
+    private float tileDiam = 12.0f; // distance from an edge to the opposite edge by default
     public readonly bool vertexDistance = true; // use distance from vertex to vertex for tileDiam
     private Hexagon[,] hexagons;
    
@@ -40,8 +40,10 @@ public class HexagonGrid : MonoBehaviour
                 else
                 {
                     //create new list containing the hexagon and add it
-                    hexagonsOfSameType = new List<Hexagon>();
-                    hexagonsOfSameType.Add(h);
+                    hexagonsOfSameType = new List<Hexagon>
+                    {
+                        h
+                    };
                     Hexagon.hexPrefabs.Add(h.Encoding, hexagonsOfSameType);
                     Hexagon.hexPrefabsUsageIndex.Add(h.Encoding, 0); //initalize as not used so far
                     Debug.Log("Encoding: " + Convert.ToString(h.Encoding, 2) + ", " + h.EncodeStart);
@@ -49,13 +51,26 @@ public class HexagonGrid : MonoBehaviour
             }
         }
 
-        gridWidth = 10;
-        gridHeight = 10;
-        tileDiam = 12.0f;
         position = transform.position;
 
         hexagons = new Hexagon[gridHeight, gridWidth];
 
+        Hexagon.Direction[] leftRight = { Hexagon.Direction.Right, Hexagon.Direction.Left };
+        Hexagon.Direction[] tleftBright = { Hexagon.Direction.BotRight, Hexagon.Direction.TopLeft };
+        Hexagon.Direction[] empty = { };
+
+        Hexagon.Direction[,][] griddirs = { { leftRight, leftRight, leftRight, leftRight, leftRight, leftRight, leftRight },
+            { leftRight, leftRight, leftRight, leftRight, leftRight, leftRight, leftRight },
+            { leftRight, empty, tleftBright, leftRight, leftRight, leftRight, leftRight },
+            { leftRight, leftRight, leftRight, leftRight, leftRight, leftRight, leftRight },
+            { leftRight, leftRight, leftRight, leftRight, leftRight, leftRight, leftRight },
+            { leftRight, leftRight, leftRight, leftRight, leftRight, leftRight, leftRight },
+            { leftRight, leftRight, leftRight, leftRight, leftRight, leftRight, leftRight },
+        };
+        
+       CreateHexagons(griddirs);
+
+        /*
         for(int row = 0; row < gridHeight; row++)
         {
             for(int col = 0; col < gridWidth; col++)
@@ -63,11 +78,11 @@ public class HexagonGrid : MonoBehaviour
                 Hexagon h = Hexagon.Create(Hexagon.Direction.TopLeft, Hexagon.Direction.BotRight);
                 SetHexagonAt(h, row, col);
             }
-        }
+        }*/
 
         // Some tests for the data structure
 
-        SetHexagonAt(Hexagon.Create(), 2, 1);
+        //SetHexagonAt(Hexagon.Create(), 2, 1);
         //hexagons[2, 1].GetNeighbor(Hexagon.Direction.TopRight).Orientation = Hexagon.Direction.TopLeft;
 
         //hexagons[0, 0].GetComponent<Hexagon>().SetNeighbor(Hexagon.Direction.TopLeft, new GameObject());
@@ -91,6 +106,19 @@ public class HexagonGrid : MonoBehaviour
     public Hexagon GetHexagonAt(int row, int col)
     {
         return hexagons[row, col];
+    }
+
+    public void CreateHexagons(Hexagon.Direction[,][] hexagons)
+    {
+        int rowCount = hexagons.GetLength(0);
+        int colCount = hexagons.GetLength(1);
+        for (int i = 0; i < rowCount; i++)
+        {
+            for(int j = 0; j < colCount; j++)
+            {
+                SetHexagonAt(Hexagon.Create(hexagons[i, j]), i, j);
+            }
+        }
     }
 
     public void SetHexagonAt(Hexagon h, int row, int col)
