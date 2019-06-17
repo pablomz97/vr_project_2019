@@ -8,13 +8,30 @@ public class HexagonImagesGenerator : EditorWindow
 {
   private Renderer[] currentlyHiddenGameObjects;
   private Hexagon[] hexagons;
+  public enum RenderModes { Scene, SceneDepth };
   private int selectedHexagonIndex = 0;
+  private int selectedRenderModeIndex = 0;
   private GUIStyle buttonStyle;
   private GUIStyle popupStyle;
+
+  public RenderModes CurrentRenderMode
+  {
+    get
+    {
+      return (RenderModes)Enum.GetValues(typeof(RenderModes)).GetValue(selectedRenderModeIndex);
+    }
+  }
 
   public void OnGUI()
   {
     SetStyles();
+
+    selectedRenderModeIndex = EditorGUILayout.Popup("Render Mode",
+                                                    selectedRenderModeIndex,
+                                                    Enum.GetNames(typeof(RenderModes)),
+                                                    popupStyle);
+
+    EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, 1), Color.gray);
 
     FindAllHexagons();
     RefreshDropdown();
@@ -78,7 +95,7 @@ public class HexagonImagesGenerator : EditorWindow
 
     PrepareScene();
 
-    currentlySelectedHexagon.RenderImage();
+    currentlySelectedHexagon.RenderImage(CurrentRenderMode);
 
     RestoreScene();
   }
@@ -153,7 +170,7 @@ public class HexagonImagesGenerator : EditorWindow
   [MenuItem("Hexagon Images/Generator")]
   public static void ShowWindow()
   {
-    GetWindowWithRect<HexagonImagesGenerator>(new Rect(0, 0, 350, 160), true, "Generate Map Images for Hexagons", true);
+    GetWindowWithRect<HexagonImagesGenerator>(new Rect(0, 0, 350, 205), true, "Generate Map Images for Hexagons", true);
   }
 
   private class Hexagon
@@ -214,7 +231,7 @@ public class HexagonImagesGenerator : EditorWindow
       Selection.activeGameObject = this.GameObject;
     }
 
-    public void RenderImage()
+    public void RenderImage(RenderModes renderMode)
     {
       float hexagonalAspectRatio = Mathf.Sqrt(3) / 2;
       int height = 1920;
@@ -226,12 +243,16 @@ public class HexagonImagesGenerator : EditorWindow
       RenderTexture renderTexture = new RenderTexture(width, height, 24);
       Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
-      imageRenderer.AddComponent<DepthCamera>();
+      if (renderMode == RenderModes.SceneDepth)
+      {
+        imageRenderer.AddComponent<DepthCamera>();
+
+        camera.depthTextureMode = DepthTextureMode.Depth;
+        camera.farClipPlane = 7.5f;
+        camera.nearClipPlane = 0f;
+      }
 
       camera.aspect = hexagonalAspectRatio;
-      camera.depthTextureMode = DepthTextureMode.Depth;
-      camera.farClipPlane = 7.5f;
-      camera.nearClipPlane = 0f;
       camera.orthographic = true;
       camera.orthographicSize = this.CircumRadius;
       camera.targetTexture = renderTexture;
@@ -248,7 +269,7 @@ public class HexagonImagesGenerator : EditorWindow
 
       screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
 
-      SaveImage(screenshot);
+      SaveImage(screenshot, renderMode);
 
       ConcealPath();
 
@@ -279,10 +300,10 @@ public class HexagonImagesGenerator : EditorWindow
       }
     }
 
-    private void SaveImage(Texture2D screenshot)
+    private void SaveImage(Texture2D screenshot, RenderModes renderMode)
     {
       byte[] bytes = screenshot.EncodeToPNG();
-      System.IO.FileInfo file = new System.IO.FileInfo($"Generated Map Images/{this.Name}.png");
+      System.IO.FileInfo file = new System.IO.FileInfo($"Generated Map Images/{this.Name}_{renderMode.ToString()}.png");
 
       file.Directory.Create();
 
