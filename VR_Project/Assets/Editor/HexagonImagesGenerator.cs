@@ -27,9 +27,9 @@ public class HexagonImagesGenerator : EditorWindow
 
     EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, 1), Color.gray);
 
-    if (GUILayout.Button("Render Image from Selected Hexagon", buttonStyle))
+    if (GUILayout.Button("Render Image of Selected Hexagon", buttonStyle))
     {
-      RenderImageFromSelectedHexagon();
+      RenderImageOfSelectedHexagon();
     }
 
     hexagons[selectedHexagonIndex].Focus();
@@ -62,7 +62,7 @@ public class HexagonImagesGenerator : EditorWindow
                                                   popupStyle);
   }
 
-  private void RenderImageFromSelectedHexagon()
+  private void RenderImageOfSelectedHexagon()
   {
     Hexagon currentlySelectedHexagon = hexagons[selectedHexagonIndex];
 
@@ -130,7 +130,7 @@ public class HexagonImagesGenerator : EditorWindow
   [MenuItem("Hexagon Images/Generator")]
   public static void ShowWindow()
   {
-    GetWindowWithRect<HexagonImagesGenerator>(new Rect(0, 0, 350, 130), true, "Generate Map Images from Hexagons", true);
+    GetWindowWithRect<HexagonImagesGenerator>(new Rect(0, 0, 350, 160), true, "Generate Map Images for Hexagons", true);
   }
 
   private class Hexagon
