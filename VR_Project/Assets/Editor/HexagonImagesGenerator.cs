@@ -65,9 +65,13 @@ public class HexagonImagesGenerator : EditorWindow
 
   private void RefreshDropdown()
   {
+    string[] hexagonNames = hexagons.Select(hexagon => hexagon.Name).ToArray();
+
+    Array.Sort(hexagonNames, (firstName, secondName) => String.Compare(firstName, secondName));
+
     selectedHexagonIndex = EditorGUILayout.Popup("Available Hexagons",
                                                   selectedHexagonIndex,
-                                                  hexagons.Select(hexagon => hexagon.Name).ToArray(),
+                                                  hexagonNames,
                                                   popupStyle);
   }
 
