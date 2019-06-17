@@ -1,8 +1,16 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:VR_Project/Assets/Tiling Material Pack_Free/Materials.meta
+guid: 2bc154b03f91b644694b39c2ff0cbe53
+folderAsset: yes
+timeCreated: 1498841239
+licenseType: Store
+=======
 guid: e35b928d6d3227b448dce2e5b601790d
 folderAsset: yes
+>>>>>>> chalk-implementation:VR_Project/Assets/Scripts.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+>>>>>>> C:\Users\PREDAT~1\AppData\Local\Temp\meld-tmp-Remoteqkaotku4
