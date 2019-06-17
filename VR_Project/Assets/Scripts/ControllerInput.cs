@@ -10,6 +10,8 @@ public class ControllerInput : MonoBehaviour
 	public SteamVR_Action_Boolean action;
 	public SteamVR_Action_Vibration hapticAction;
 
+	public Material chalkMat;
+
 	private List<PaintChalk> chalkLines = new List<PaintChalk>();
 	private PaintChalk chalk;
 
@@ -24,7 +26,7 @@ public class ControllerInput : MonoBehaviour
 
 	public void OnTriggerPressed(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
 	{
-		chalk = new PaintChalk(hapticAction);
+		chalk = new PaintChalk(hapticAction, chalkMat);
 		chalkLines.Add(chalk);
 		paint = true;
 		Debug.Log("Trigger was pressed");
