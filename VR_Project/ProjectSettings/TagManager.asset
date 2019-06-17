@@ -4,7 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - HexTile
+  - gravSrc
+  - projectile
+  - Hexagon
+  - HexagonPlatform
   layers:
   - Default
   - TransparentFX
