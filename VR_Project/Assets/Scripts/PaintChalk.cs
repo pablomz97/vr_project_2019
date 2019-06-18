@@ -29,9 +29,10 @@ public class PaintChalk
 	}
 
 	void Init(){
+		lineRenderer.textureMode = LineTextureMode.Tile;
 		lineRenderer.transform.eulerAngles = new Vector3(90, 0, 0);
 		lineRenderer.alignment = LineAlignment.TransformZ;
-		lineRenderer.widthMultiplier = 0.03f;
+		lineRenderer.widthMultiplier = 0.07f;
 		lineRenderer.material = this.chalkMat;
 	}
 
@@ -39,10 +40,10 @@ public class PaintChalk
 	public void Add(Vector3 point){
 		if(lineRenderer.positionCount == 0 || (pointList[pointList.Count - 1] - point).magnitude >= minDistance){
 			Debug.Log(point.y);
-			//if(point.y < 0.20f){
+			if(point.y < 10.6f){
 				point.y = 10.40f;
 				AddPoint(point);
-			//}
+			}
 		}
 	}
 
@@ -52,7 +53,6 @@ public class PaintChalk
 			Init();
 
 		pointList.Add(point);
-		Debug.Log("added Point");
 		if (pointList.Count < 2){
 			return;
 		}

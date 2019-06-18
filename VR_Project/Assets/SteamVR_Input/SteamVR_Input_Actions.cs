@@ -35,6 +35,10 @@ namespace Valve.VR
         
         private static SteamVR_Action_Boolean p_chalk_HeadsetOnHead;
         
+        private static SteamVR_Action_Boolean p_chalk_GrabPinchLeft;
+        
+        private static SteamVR_Action_Pose p_chalk_newPose;
+        
         private static SteamVR_Action_Vibration p_chalk_Haptic;
         
         private static SteamVR_Action_Vector2 p_platformer_Move;
@@ -123,6 +127,22 @@ namespace Valve.VR
             }
         }
         
+        public static SteamVR_Action_Boolean chalk_GrabPinchLeft
+        {
+            get
+            {
+                return SteamVR_Actions.p_chalk_GrabPinchLeft.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Pose chalk_newPose
+        {
+            get
+            {
+                return SteamVR_Actions.p_chalk_newPose.GetCopy<SteamVR_Action_Pose>();
+            }
+        }
+        
         public static SteamVR_Action_Vibration chalk_Haptic
         {
             get
@@ -199,6 +219,8 @@ namespace Valve.VR
                     SteamVR_Actions.chalk_SkeletonRightHand,
                     SteamVR_Actions.chalk_Squeeze,
                     SteamVR_Actions.chalk_HeadsetOnHead,
+                    SteamVR_Actions.chalk_GrabPinchLeft,
+                    SteamVR_Actions.chalk_newPose,
                     SteamVR_Actions.chalk_Haptic,
                     SteamVR_Actions.platformer_Move,
                     SteamVR_Actions.platformer_Jump,
@@ -217,6 +239,8 @@ namespace Valve.VR
                     SteamVR_Actions.chalk_SkeletonRightHand,
                     SteamVR_Actions.chalk_Squeeze,
                     SteamVR_Actions.chalk_HeadsetOnHead,
+                    SteamVR_Actions.chalk_GrabPinchLeft,
+                    SteamVR_Actions.chalk_newPose,
                     SteamVR_Actions.platformer_Move,
                     SteamVR_Actions.platformer_Jump,
                     SteamVR_Actions.buggy_Steering,
@@ -230,6 +254,7 @@ namespace Valve.VR
                     SteamVR_Actions.chalk_Haptic};
             Valve.VR.SteamVR_Input.actionsPose = new Valve.VR.SteamVR_Action_Pose[] {
                     SteamVR_Actions.chalk_Pose,
+                    SteamVR_Actions.chalk_newPose,
                     SteamVR_Actions.mixedreality_ExternalCamera};
             Valve.VR.SteamVR_Input.actionsBoolean = new Valve.VR.SteamVR_Action_Boolean[] {
                     SteamVR_Actions.chalk_InteractUI,
@@ -237,6 +262,7 @@ namespace Valve.VR
                     SteamVR_Actions.chalk_GrabPinch,
                     SteamVR_Actions.chalk_GrabGrip,
                     SteamVR_Actions.chalk_HeadsetOnHead,
+                    SteamVR_Actions.chalk_GrabPinchLeft,
                     SteamVR_Actions.platformer_Jump,
                     SteamVR_Actions.buggy_Brake,
                     SteamVR_Actions.buggy_Reset};
@@ -257,6 +283,7 @@ namespace Valve.VR
                     SteamVR_Actions.chalk_GrabGrip,
                     SteamVR_Actions.chalk_Squeeze,
                     SteamVR_Actions.chalk_HeadsetOnHead,
+                    SteamVR_Actions.chalk_GrabPinchLeft,
                     SteamVR_Actions.platformer_Move,
                     SteamVR_Actions.platformer_Jump,
                     SteamVR_Actions.buggy_Steering,
@@ -276,6 +303,8 @@ namespace Valve.VR
             SteamVR_Actions.p_chalk_SkeletonRightHand = ((SteamVR_Action_Skeleton)(SteamVR_Action.Create<SteamVR_Action_Skeleton>("/actions/Chalk/in/SkeletonRightHand")));
             SteamVR_Actions.p_chalk_Squeeze = ((SteamVR_Action_Single)(SteamVR_Action.Create<SteamVR_Action_Single>("/actions/Chalk/in/Squeeze")));
             SteamVR_Actions.p_chalk_HeadsetOnHead = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/Chalk/in/HeadsetOnHead")));
+            SteamVR_Actions.p_chalk_GrabPinchLeft = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/Chalk/in/GrabPinchLeft")));
+            SteamVR_Actions.p_chalk_newPose = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/Chalk/in/newPose")));
             SteamVR_Actions.p_chalk_Haptic = ((SteamVR_Action_Vibration)(SteamVR_Action.Create<SteamVR_Action_Vibration>("/actions/Chalk/out/Haptic")));
             SteamVR_Actions.p_platformer_Move = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/platformer/in/Move")));
             SteamVR_Actions.p_platformer_Jump = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/platformer/in/Jump")));

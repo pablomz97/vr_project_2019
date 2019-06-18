@@ -41,6 +41,14 @@
       "requirement": "optional"
     },
     {
+      "name": "/actions/Chalk/in/GrabPinchLeft",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/Chalk/in/newPose",
+      "type": "pose"
+    },
+    {
       "name": "/actions/Chalk/out/Haptic",
       "type": "vibration"
     },
@@ -77,7 +85,7 @@
   "action_sets": [
     {
       "name": "/actions/Chalk",
-      "usage": "single"
+      "usage": "leftright"
     },
     {
       "name": "/actions/platformer",
