@@ -39,7 +39,6 @@ public class PaintChalk
 
 	public void Add(Vector3 point){
 		if(lineRenderer.positionCount == 0 || (pointList[pointList.Count - 1] - point).magnitude >= minDistance){
-			Debug.Log(point.y);
 			if(point.y < 10.6f){
 				point.y = 10.40f;
 				AddPoint(point);
