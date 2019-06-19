@@ -9,6 +9,9 @@
 - resolutions above 4096x4096 are not recommended
 - Texture resolution should be chosen such that texel density is roughly similar for all assets (eg. if an asset is 2x bigger then another one, it needs 2x the texture resolution etc.)
 
+### Notes for PBR textures:
+- Base color/Albedo maps should generally have relatively low contrast and saturation with RGB values in the range of 40-240, values outside this range are unrealistic for real-world materials and can look strange in the final material
+
 ## Audio
 - Audio files should be encoded as .wav, .ogg or .mp3, .wav is only recommended for very short audio files
 - The compression format in Unity should be set to ADPCM or Vorbis for larger files, for very small files PCM can be used

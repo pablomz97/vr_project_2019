@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/lightingTest.unity
     guid: 45cd2e04b59337449b4a6a192e3598c9
+  - enabled: 1
+    path: Assets/Scenes/caveTest.unity
+    guid: 24e5995588bdfa84f89102e30524d1a8
   m_configObjects: {}

@@ -311,7 +311,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			Vector3 pointerStart = pointerStartTransform.position;
 			Vector3 pointerEnd;
-			Vector3 pointerDir = pointerStartTransform.forward;
+			Vector3 pointerDir = -pointerStartTransform.forward;
 			bool hitSomething = false;
 			bool showPlayAreaPreview = false;
 			Vector3 playerFeetOffset = player.trackingOriginTransform.position - player.feetPositionGuess;
