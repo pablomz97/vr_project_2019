@@ -718,6 +718,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3068469504234192052}
   - component: {fileID: 1643232375892813344}
+  - component: {fileID: 2889300615093747791}
   m_Layer: 0
   m_Name: PF_Hex_c02
   m_TagString: Untagged
@@ -763,6 +764,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb56802d57382e746ba213247b5b3282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2889300615093747791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3068469504234192053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b6b428f6c40db4e8461c5b60a2a6e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rowIndex: -1
+  colIndex: -1
+  controlGrid: {fileID: 0}
+  orientation: 0
+  hasExit: 010001010000
 --- !u!1 &3068469504426677980
 GameObject:
   m_ObjectHideFlags: 0
