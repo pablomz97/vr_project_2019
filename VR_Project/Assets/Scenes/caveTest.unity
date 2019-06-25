@@ -17804,6 +17804,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1164586110}
+      objectReference: {fileID: 1867606698}
+    - target: {fileID: 2362987866054031744, guid: bf088997f8dc9c941a8398fe6ffefbe6,
+        type: 3}
+      propertyPath: m_TagString
+      value: HexagonPlatform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf088997f8dc9c941a8398fe6ffefbe6, type: 3}

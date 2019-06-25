@@ -8,7 +8,7 @@ public class HexagonImagesGenerator : EditorWindow
 {
   private Renderer[] currentlyHiddenGameObjects;
   private Hexagon[] hexagons;
-  public enum RenderModes { Scene, SceneDepth };
+  public enum RenderModes { Scene, SceneDepth, WeightedSceneDepth };
   private int selectedHexagonIndex = 0;
   private int selectedRenderModeIndex = 0;
   private GUIStyle buttonStyle;
@@ -240,31 +240,51 @@ public class HexagonImagesGenerator : EditorWindow
       GameObject imageRenderer = new GameObject();
       Camera camera = imageRenderer.AddComponent<Camera>();
       Light light = imageRenderer.AddComponent<Light>();
+      RenderTexture intermediateTexture = new RenderTexture(width, height, 24);
       RenderTexture renderTexture = new RenderTexture(width, height, 24);
       Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
-      if (renderMode == RenderModes.SceneDepth)
-      {
-        imageRenderer.AddComponent<DepthCamera>();
-
-        camera.depthTextureMode = DepthTextureMode.Depth;
-        camera.farClipPlane = 7.5f;
-        camera.nearClipPlane = 0f;
-      }
+      RevealPath();
 
       camera.aspect = hexagonalAspectRatio;
       camera.orthographic = true;
       camera.orthographicSize = this.CircumRadius;
-      camera.targetTexture = renderTexture;
       camera.transform.Rotate(90, 180, 0);
 
       light.range = 1000;
 
       imageRenderer.transform.position = this.GameObject.transform.position + new Vector3(0, 7.5f, 0);
 
-      RevealPath();
+      if (renderMode == RenderModes.Scene)
+      {
+        camera.targetTexture = renderTexture;
+      }
+      else if (renderMode == RenderModes.SceneDepth)
+      {
+        imageRenderer.AddComponent<MapImageCamera>().UseDepthShader();
+
+        camera.depthTextureMode = DepthTextureMode.Depth;
+        camera.farClipPlane = 7.5f;
+        camera.nearClipPlane = 0;
+        camera.targetTexture = renderTexture;
+      }
+      else
+      {
+        camera.targetTexture = intermediateTexture;
+        camera.Render();
+
+        MapImageCamera mapImageCamera = imageRenderer.AddComponent<MapImageCamera>();
+        mapImageCamera.UseWeightedDepthShader();
+        mapImageCamera.material.SetTexture("_MainTex", intermediateTexture);
+
+        camera.depthTextureMode = DepthTextureMode.Depth;
+        camera.farClipPlane = 8f;
+        camera.nearClipPlane = 0;
+        camera.targetTexture = renderTexture;
+      }
 
       camera.Render();
+
       RenderTexture.active = renderTexture;
 
       screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);

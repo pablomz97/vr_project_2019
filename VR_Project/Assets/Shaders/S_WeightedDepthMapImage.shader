@@ -1,4 +1,4 @@
-﻿Shader "Custom/S_DepthMapImage"
+﻿Shader "Custom/S_WeightedDepthMapImage"
 {
   SubShader {
     Tags {
@@ -13,6 +13,7 @@
       #pragma vertex vertexShader
 
       uniform sampler2D _CameraDepthTexture;
+      uniform sampler2D _MainTex;
 
       struct Vertex {
         float4 position: POSITION;
@@ -33,10 +34,10 @@
         return processedVertex;
       }
 
-      fixed4 fragmentShader(ProcessedVertex processedVertex): COLOR {
+      float4 fragmentShader(ProcessedVertex processedVertex): COLOR {
         float depth = tex2D(_CameraDepthTexture, processedVertex.texturePosition).r;
 
-        return depth;
+        return (depth * depth * 2) * tex2D(_MainTex, processedVertex.texturePosition);
       }
 
       ENDCG
