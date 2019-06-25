@@ -57,8 +57,6 @@ public class HexagonImagesGenerator : EditorWindow
         RenderImageOfSelectedHexagon();
       }
     }
-
-    hexagons[selectedHexagonIndex].Focus();
   }
 
   private void SetStyles()
