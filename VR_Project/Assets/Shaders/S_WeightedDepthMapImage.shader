@@ -37,7 +37,7 @@
       float4 fragmentShader(ProcessedVertex processedVertex): COLOR {
         float depth = tex2D(_CameraDepthTexture, processedVertex.texturePosition).r;
 
-        return (depth * depth * 2) * tex2D(_MainTex, processedVertex.texturePosition);
+        return pow(depth * 6, 2) * tex2D(_MainTex, processedVertex.texturePosition);
       }
 
       ENDCG
