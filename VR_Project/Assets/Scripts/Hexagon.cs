@@ -3,14 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hexagon : MonoBehaviour
+public class Hexagon
 {
     public enum Direction { Right, TopRight, TopLeft, Left, BotLeft, BotRight };
     public int rowIndex = -1;
     public int colIndex = -1;
     public HexagonGrid controlGrid;
     public Direction orientation = Direction.Right;
-    public bool[] hasExit = new bool[6]; // do not change at runtime!!! readonly is not possible because we want this to be editable in Unity
+    public bool[] hasExit = new bool[6];
+    public int[] edgeCost = new int[6];
+    private GameObject gameObject;
     private byte encoding = 0xFF;
     private Direction encodeStart;
 
@@ -19,9 +21,30 @@ public class Hexagon : MonoBehaviour
     public static readonly int MAX_DUPLICATE_TILES = 100;
     public static bool prefabsLoaded = false;
 
-    static Hexagon()
+    public Hexagon(GameObject gameObject)
     {
+        this.gameObject = gameObject;
 
+        this.hasExit = gameObject.GetComponent<HexagonProperties>().hasExit;
+
+        (encoding, encodeStart) = Hexagon.ExitArrayToEncoding(hasExit);
+    }
+
+    public Hexagon(bool[] hasExit)
+    {
+        this.hasExit = hasExit;
+        (encoding, encodeStart) = Hexagon.ExitArrayToEncoding(hasExit);
+    }
+
+    public Hexagon(params Hexagon.Direction[] exits)
+    {
+        // calculate encoding:
+        foreach (Hexagon.Direction exit in exits)
+        {
+            hasExit[(int)exit] = true;
+        }
+        (encoding, encodeStart) = Hexagon.ExitArrayToEncoding(hasExit);
+        Debug.Log("Exits: " + String.Join(", ", hasExit) );
     }
 
     // Start is called before the first frame update
@@ -159,20 +182,111 @@ public class Hexagon : MonoBehaviour
         throw new ArgumentOutOfRangeException("Neighbor does not exist.");
     }
 
+    public static Hexagon Union(Hexagon h1, Hexagon h2)
+    {
+        bool[] hasExit = new bool[6];
+
+        for(int i = 0; i < hasExit.Length; i++)
+        {
+            hasExit[i] = h1.hasExit[i] || h2.hasExit[i];
+        }
+
+        return new Hexagon(hasExit);
+    }
+
+    public Direction? DirectionOfContact(int row, int col)
+    {
+        if(row == this.rowIndex)
+        {
+            if(col == this.colIndex - 1)
+            {
+                return Direction.Left;
+            }
+            else if(col == this.colIndex + 1)
+            {
+                return Direction.Right;
+            }
+        }
+        else if(row == this.rowIndex - 1)
+        {
+            if(this.rowIndex % 2 == 0)
+            {
+                if(this.colIndex == col)
+                {
+                    return Direction.TopRight;
+                }
+                else if (this.colIndex - 1 == col)
+                {
+                    return Direction.TopLeft;
+                }
+            }
+            else
+            {
+                if (this.colIndex == col)
+                {
+                    return Direction.TopLeft;
+                }
+                else if (this.colIndex + 1 == col)
+                {
+                    return Direction.TopRight;
+                }
+            }
+        }
+        else if(row == this.rowIndex +1)
+        {
+            if (this.rowIndex % 2 == 0)
+            {
+                if (this.colIndex == col)
+                {
+                    return Direction.BotRight;
+                }
+                else if (this.colIndex - 1 == col)
+                {
+                    return Direction.BotLeft;
+                }
+            }
+            else
+            {
+                if (this.colIndex == col)
+                {
+                    return Direction.BotLeft;
+                }
+                else if (this.colIndex + 1 == col)
+                {
+                    return Direction.BotRight;
+                }
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>
     /// This calculates the position of the tile as it is defined by the Hexagon Grid. Therefore, controlGrid, colIndex and rowIndex must already be set
     /// </summary>
     /// <returns>Absolute position (i.e. using the coordinate system of the grid's parent)</returns>
-    public static Vector3 CalcPosition(HexagonGrid controlGrid, int rowIndex, int colIndex)
+    public void UpdatePosition()
     {
-        //x-axis corresponds to col with the same orientation, z-axis to row but with inverted orientation
-        float rightOffset = 0.0f;
-        if (rowIndex % 2 == 1) rightOffset = controlGrid.TileDiam / 2.0f;
+        if (gameObject != null && colIndex != -1 && rowIndex != -1)
+        {
+            //x-axis corresponds to col with the same orientation, z-axis to row but with inverted orientation
+            float rightOffset = 0.0f;
+            if (rowIndex % 2 == 1) rightOffset = controlGrid.TileDiam / 2.0f;
 
-        // multiplying before taking the square root should decrease numerical error, the factor derives from the Pythagorean theorem
-        float zDistance = Mathf.Sqrt(0.75f * Mathf.Pow(controlGrid.TileDiam, 2));
+            // multiplying before taking the square root should decrease numerical error, the factor derives from the Pythagorean theorem
+            float zDistance = Mathf.Sqrt(0.75f * Mathf.Pow(controlGrid.TileDiam, 2));
 
-        return controlGrid.Position + new Vector3(colIndex * controlGrid.TileDiam + rightOffset, 0, -rowIndex * zDistance);
+            gameObject.transform.position = controlGrid.Position + new Vector3(colIndex * controlGrid.TileDiam + rightOffset, 0, -rowIndex * zDistance);
+
+            if (controlGrid.vertexDistance)
+            {
+                GameObject.transform.localScale *= Mathf.Sqrt(4.0f / 3.0f);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Position of hexagon could not be updated due to lack of information!");
+        }
     }
 
     /// <summary>
@@ -191,6 +305,20 @@ public class Hexagon : MonoBehaviour
             Vector3 oldRot = gameObject.transform.rotation.eulerAngles;
             oldRot.y = -(int)orientation * 60.0f;
             gameObject.transform.rotation = Quaternion.Euler(oldRot);
+        }
+    }
+
+    public GameObject GameObject
+    {
+        get
+        {
+            return gameObject;
+        }
+        set
+        {
+            gameObject = value;
+            this.hasExit = gameObject.GetComponent<HexagonProperties>().hasExit;
+            UpdatePosition();
         }
     }
 
@@ -216,7 +344,7 @@ public class Hexagon : MonoBehaviour
         return hasExit[(d - orientation + 6) % 6];
     }
 
-    public bool isConnected(Direction d)
+    public bool IsConnected(Direction d)
     {
         if(this.GetNeighbor(d) == null)
         {
@@ -230,15 +358,14 @@ public class Hexagon : MonoBehaviour
     /// </summary>
     /// <param name="exits">directions with an exit</param>
     /// <returns>Reference to the just created Hexagon</returns>
-    public static Hexagon Create(params Hexagon.Direction[] exits)
+    public void Load()
     {
-        // calculate encoding:
-        bool[] hasExit = new bool[6];
-
-        foreach (Hexagon.Direction exit in exits)
+        if(gameObject != null)
         {
-            hasExit[(int)exit] = true;
+            throw new InvalidOperationException("Hexagon already loaded");
         }
+
+        
 
         if (!HexagonGrid.debugMode)
         {
@@ -259,7 +386,9 @@ public class Hexagon : MonoBehaviour
             Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
             Debug.Log("dir: " + dir + " EncodeStart: " + prefab.EncodeStart + " RelDir: " + relDir);
 
-            return Hexagon.Create(prefab.gameObject, relDir);
+            //instantiate:
+            GameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
+
         }
         else
         {
@@ -272,23 +401,29 @@ public class Hexagon : MonoBehaviour
             }*/
             hexPrefabsUsageIndex.Remove(encoding);
             hexPrefabsUsageIndex.Add(encoding, offset + 1);
-
+            
 
             List<Hexagon> hexagonOfType;
             bool success = hexPrefabs.TryGetValue(0, out hexagonOfType);
             Hexagon prefab = hexagonOfType[0];
             Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
 
-            Hexagon dummy = Hexagon.Create(prefab.gameObject, relDir);
 
-            dummy.hasExit = hasExit;
-            //TODO: draw lines
+            gameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
+            Debug.Log("Exits 2: " + String.Join(", ", hasExit));
+            gameObject.GetComponent<HexagonProperties>().hasExit = hasExit;
+
+            UpdatePosition();
+
+            Debug.Log("Exits 3: " + String.Join(", ", hasExit));
+            // draw lines
+
             float xDistance = 12.0f/2.0f;
             float zDistance = Mathf.Sqrt(0.75f * Mathf.Pow(xDistance, 2));
 
             for (int i = 0; i < 6; i++)
             {
-                if(dummy.hasExit[i])
+                if(hasExit[i])
                 {
                     Vector3 edgePoint = new Vector3();
                     switch ((Direction) i)
@@ -321,20 +456,21 @@ public class Hexagon : MonoBehaviour
                     }
 
                     LineRenderer linRen = (new GameObject("edge")).AddComponent<LineRenderer>();
+                    linRen.gameObject.transform.parent = gameObject.transform;
                     linRen.useWorldSpace = false;
+                    linRen.gameObject.transform.position = gameObject.transform.position;
+                    Debug.Log("Tile Position: " + gameObject.transform.position);
                     linRen.positionCount = 2;
                     linRen.SetPosition(0, new Vector3(0.0f,0.0f,0.0f));
                     linRen.SetPosition(1, edgePoint);
                     linRen.widthMultiplier = 0.1f;
-                    linRen.gameObject.transform.parent = dummy.gameObject.transform;
                 }
             }
             //dummy.Orientation = (Direction)UnityEngine.Random.Range(0, 6);
-            return dummy;
         }
     }
 
-    public static Hexagon Create(GameObject prefabHexagon, Direction orientation)
+    /*public static Hexagon Create(GameObject prefabHexagon, Direction orientation)
     {
         if (prefabHexagon.GetComponent<Hexagon>() == null)
         {
@@ -349,7 +485,7 @@ public class Hexagon : MonoBehaviour
         h.Orientation = orientation;
 
         return h;
-    }
+    }*/
 
     public static (byte, Direction) ExitArrayToEncoding(bool[] hasExit)
     {

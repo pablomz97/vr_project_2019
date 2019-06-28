@@ -63,13 +63,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3134799310016942884}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41b6b428f6c40db4e8461c5b60a2a6e3, type: 3}
+  m_Script: {fileID: 11500000, guid: a344363b90e925f41bad3e303d9a6fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rowIndex: -1
-  colIndex: -1
-  controlGrid: {fileID: 0}
-  orientation: 0
   hasExit: 000000000000
 --- !u!1 &6712420121788373056
 GameObject:
