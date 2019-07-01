@@ -6,6 +6,7 @@ using UnityEngine;
 public class LevelController : MonoBehaviour
 {
     // Start is called before the first frame update
+    public static byte[][] allHexagonEncodings = new byte[7][]; //the first index represents the degree, i.e. the amount of exits
     void Start()
     {
         HexagonGrid mainGrid = new GameObject().AddComponent<HexagonGrid>();
@@ -13,7 +14,7 @@ public class LevelController : MonoBehaviour
         Hexagon.prefabsLoaded = true;
         GameObject[] hexagonPrefabs = Resources.LoadAll<GameObject>("HexagonPrefabs");
         Hexagon.hexPrefabs = new SortedDictionary<int, List<Hexagon>>();
-        Hexagon.hexPrefabsUsageIndex = new SortedDictionary<int, int>();
+        //mainGrid.hexPrefabsUsageIndex = new SortedDictionary<int, int>();
 
         // put hexagons in dictionary to allow easy access by exits.
         foreach (GameObject hObj in hexagonPrefabs)
@@ -35,31 +36,44 @@ public class LevelController : MonoBehaviour
                     h
                 };
                 Hexagon.hexPrefabs.Add(h.Encoding, hexagonsOfSameType);
-                Hexagon.hexPrefabsUsageIndex.Add(h.Encoding, 0); //initalize as not used so far
+                mainGrid.hexPrefabsUsageIndex.Add(h.Encoding, 0); //initalize as not used so far
                 Debug.Log("Encoding: " + Convert.ToString(h.Encoding, 2) + ", " + h.EncodeStart);
             }
         }
 
-        /* Hexagon.Direction[] deadEnd = { Hexagon.Direction.Right };
+        Hexagon.Direction[] deadEnd = { Hexagon.Direction.Right };
+
+        allHexagonEncodings[1] = new byte[]{ Hexagon.ExitArrayToEncoding(deadEnd).Item1 };
 
         Hexagon.Direction[] straight = { Hexagon.Direction.Right, Hexagon.Direction.Left };
         Hexagon.Direction[] wideCurve = { Hexagon.Direction.Right, Hexagon.Direction.TopLeft };
         Hexagon.Direction[] tightCurve = { Hexagon.Direction.Right, Hexagon.Direction.TopRight };
+
+        allHexagonEncodings[2] = new byte[] { Hexagon.ExitArrayToEncoding(straight).Item1, Hexagon.ExitArrayToEncoding(wideCurve).Item1, Hexagon.ExitArrayToEncoding(tightCurve).Item1 };
 
         Hexagon.Direction[] yJct = { Hexagon.Direction.Right, Hexagon.Direction.TopLeft, Hexagon.Direction.BotLeft };
         Hexagon.Direction[] leftSplitoff = { Hexagon.Direction.Right, Hexagon.Direction.Left, Hexagon.Direction.BotLeft };
         Hexagon.Direction[] rightSplitoff = { Hexagon.Direction.Right, Hexagon.Direction.Left, Hexagon.Direction.TopLeft };
         Hexagon.Direction[] arrowJct = { Hexagon.Direction.Right, Hexagon.Direction.TopRight, Hexagon.Direction.TopLeft };
 
+        allHexagonEncodings[3] = new byte[] { Hexagon.ExitArrayToEncoding(yJct).Item1, Hexagon.ExitArrayToEncoding(leftSplitoff).Item1,
+            Hexagon.ExitArrayToEncoding(rightSplitoff).Item1, Hexagon.ExitArrayToEncoding(arrowJct).Item1 };
+
         Hexagon.Direction[] xJct = { Hexagon.Direction.Right, Hexagon.Direction.Left, Hexagon.Direction.TopRight, Hexagon.Direction.BotLeft };
         Hexagon.Direction[] trident = { Hexagon.Direction.Right, Hexagon.Direction.Left, Hexagon.Direction.TopRight, Hexagon.Direction.BotRight };
         Hexagon.Direction[] crippleFourwayJct = { Hexagon.Direction.Left, Hexagon.Direction.TopLeft, Hexagon.Direction.TopRight, Hexagon.Direction.Right };
 
+        allHexagonEncodings[4] = new byte[] { Hexagon.ExitArrayToEncoding(xJct).Item1, Hexagon.ExitArrayToEncoding(trident).Item1, Hexagon.ExitArrayToEncoding(crippleFourwayJct).Item1 };
+
         Hexagon.Direction[] fivewayJct = { Hexagon.Direction.Left, Hexagon.Direction.TopLeft, Hexagon.Direction.TopRight, Hexagon.Direction.BotLeft, Hexagon.Direction.BotRight };
+
+        allHexagonEncodings[5] = new byte[] { Hexagon.ExitArrayToEncoding(fivewayJct).Item1 };
 
         Hexagon.Direction[] allwayJct = { Hexagon.Direction.Right, Hexagon.Direction.Left, Hexagon.Direction.TopLeft, Hexagon.Direction.TopRight, Hexagon.Direction.BotLeft, Hexagon.Direction.BotRight };
 
+        allHexagonEncodings[6] = new byte[] { Hexagon.ExitArrayToEncoding(allwayJct).Item1 };
 
+        /*
         List<Hexagon.Direction[]> tiles = new List<Hexagon.Direction[]>
         {
             deadEnd, deadEnd, deadEnd, deadEnd, deadEnd, deadEnd,

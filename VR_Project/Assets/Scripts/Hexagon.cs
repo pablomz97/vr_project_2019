@@ -10,14 +10,14 @@ public class Hexagon
     public int colIndex = -1;
     public HexagonGrid controlGrid;
     public Direction orientation = Direction.Right;
-    public bool[] hasExit = new bool[6];
+    private bool[] hasExit = new bool[6];
     public int[] edgeCost = new int[6];
     private GameObject gameObject;
     private byte encoding = 0xFF;
     private Direction encodeStart;
 
     public static SortedDictionary<int, List<Hexagon>> hexPrefabs;
-    public static SortedDictionary<int, int> hexPrefabsUsageIndex;
+    
     public static readonly int MAX_DUPLICATE_TILES = 100;
     public static bool prefabsLoaded = false;
 
@@ -57,6 +57,47 @@ public class Hexagon
     void Update()
     {
         
+    }
+
+    public void PutInDictionary()
+    {
+        if(controlGrid != null)
+        {
+            bool entryExists = controlGrid.hexPrefabsUsageIndex.TryGetValue(Encoding, out int count);
+
+            if(entryExists)
+            {
+                count++;
+                controlGrid.hexPrefabsUsageIndex.Remove(Encoding);
+            }
+            else
+            {
+                count = 1;
+            }
+
+            controlGrid.hexPrefabsUsageIndex.Add(Encoding, count);
+        }
+        else
+        {
+            Debug.LogWarning("Could not put Hexagon in dictionary because there is no control grid.");
+        }
+    }
+
+    public void RemoveFromDictionary()
+    {
+        if (controlGrid != null)
+        {
+            controlGrid.hexPrefabsUsageIndex.TryGetValue(Encoding, out int count);
+
+            count--;
+            controlGrid.hexPrefabsUsageIndex.Remove(Encoding);
+
+            controlGrid.hexPrefabsUsageIndex.Add(Encoding, count);
+        }
+        else
+        {
+            Debug.LogWarning("Could not put Hexagon in dictionary because there is no control grid.");
+        }
     }
 
     private (int,int) GetNeighborIndex(Direction d)
@@ -180,6 +221,24 @@ public class Hexagon
         }
 
         throw new ArgumentOutOfRangeException("Neighbor does not exist.");
+    }
+
+    public void SetHasExit(Direction d, bool exit)
+    {
+        if(exit != hasExit[(int)d])
+        {
+            hasExit[(int)d] = exit;
+
+            RemoveFromDictionary();
+            (encoding, encodeStart) = Hexagon.ExitArrayToEncoding(hasExit);
+            PutInDictionary();
+
+        }
+    }
+
+    public bool GetHasExit(Direction d)
+    {
+        return hasExit[(int)d];
     }
 
     public static Hexagon Union(Hexagon h1, Hexagon h2)
@@ -374,14 +433,14 @@ public class Hexagon
             List<Hexagon> hexagonOfType;
             bool success = hexPrefabs.TryGetValue(encoding, out hexagonOfType);
             //Debug.Log("Success: " + success);
-            hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
+            controlGrid.hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
             if (offset / hexagonOfType.Count >= MAX_DUPLICATE_TILES)
             {
                 throw new Exception("Maximum amount of instances from the same prefab has been exceeded");
             }
             Hexagon prefab = hexagonOfType[offset % hexagonOfType.Count];
-            hexPrefabsUsageIndex.Remove(encoding);
-            hexPrefabsUsageIndex.Add(encoding, offset + 1);
+            controlGrid.hexPrefabsUsageIndex.Remove(encoding);
+            controlGrid.hexPrefabsUsageIndex.Add(encoding, offset + 1);
 
             Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
             Debug.Log("dir: " + dir + " EncodeStart: " + prefab.EncodeStart + " RelDir: " + relDir);
@@ -394,13 +453,13 @@ public class Hexagon
         {
             (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
 
-            hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
+            controlGrid.hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
             /*if (offset / hexagonOfType.Count >= MAX_DUPLICATE_TILES)
             {
                 Debug.LogWarning("Maximum amount of instances from the same prefab has been exceeded");
             }*/
-            hexPrefabsUsageIndex.Remove(encoding);
-            hexPrefabsUsageIndex.Add(encoding, offset + 1);
+            controlGrid.hexPrefabsUsageIndex.Remove(encoding);
+            controlGrid.hexPrefabsUsageIndex.Add(encoding, offset + 1);
             
 
             List<Hexagon> hexagonOfType;
@@ -487,6 +546,18 @@ public class Hexagon
         return h;
     }*/
 
+    public static (byte, Direction) ExitArrayToEncoding(Direction[] exits)
+    {
+        bool[] hasExit = new bool[6];
+
+        foreach(Direction d in exits)
+        {
+            hasExit[(int)d] = true;
+        }
+
+        return ExitArrayToEncoding(hasExit);
+    }
+
     public static (byte, Direction) ExitArrayToEncoding(bool[] hasExit)
     {
         byte encoding = 0xFF;
@@ -509,5 +580,17 @@ public class Hexagon
         }
 
         return (encoding, d);
+    }
+
+    public static bool[] EncodingToExitArray(byte encoding, Direction d)
+    {
+        bool[] hasExit = new bool[6];
+
+        for(int i = 0; i < hasExit.Length; i++)
+        {
+            hasExit[((int)d + i) % 6] = Convert.ToBoolean(encoding & (1 << (hasExit.Length - i - 1)));
+        }
+
+        return hasExit;
     }
 }

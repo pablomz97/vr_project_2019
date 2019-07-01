@@ -1,4 +1,5 @@
 ﻿using Mischel.Collections;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 //using System.Linq;
@@ -25,6 +26,12 @@ public class MapGeneratorMST : MapGenerator
 
         grid.Union(secondGrid);
         HexagonGrid.Destroy(secondGrid);
+
+        foreach(int key in grid.hexPrefabsUsageIndex.Keys)
+        {
+            grid.hexPrefabsUsageIndex.TryGetValue(key, out int count);
+            Debug.Log("key: " + Convert.ToString(key, 2) + " count: " + count);
+        }
     }
 
     private void CalculateMST(HexagonGrid mstGrid)
@@ -63,8 +70,8 @@ public class MapGeneratorMST : MapGenerator
             if (vertex != (0, 0))
             {
                 Hexagon.Direction connectedNeighborDir = vertexHex.DirectionOfContact(pre[vertex.Item1, vertex.Item2].Item1, pre[vertex.Item1, vertex.Item2].Item2).Value;
-                vertexHex.hasExit[(int)connectedNeighborDir] = true;
-                vertexHex.GetNeighbor(connectedNeighborDir).hasExit[((int)connectedNeighborDir + 3) % 6] = true;
+                vertexHex.SetHasExit(connectedNeighborDir, true);
+                vertexHex.GetNeighbor(connectedNeighborDir).SetHasExit((Hexagon.Direction)(((int)connectedNeighborDir + 3) % 6), true);
             }
 
             for (int k = 0; k < 6; k++)
