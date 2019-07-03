@@ -241,14 +241,10 @@ public class HexagonImagesGenerator : EditorWindow
       RenderTexture renderTexture = new RenderTexture(width, height, 24);
       Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
-      RevealPath();
-
-      camera.aspect = hexagonalAspectRatio;
-      camera.orthographic = true;
-      camera.orthographicSize = this.CircumRadius;
-      camera.transform.Rotate(90, 180, 0);
-
       imageRenderer.transform.position = this.GameObject.transform.position + new Vector3(0, 10, 0);
+
+      RevealPath();
+      ConfigureCamera(ref camera, ref hexagonalAspectRatio);
 
       if (renderMode == RenderModes.Scene)
       {
@@ -279,13 +275,10 @@ public class HexagonImagesGenerator : EditorWindow
       }
 
       camera.Render();
-
       RenderTexture.active = renderTexture;
-
       screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
 
       SaveImage(screenshot, renderMode);
-
       ConcealPath();
 
       camera.targetTexture = null;
