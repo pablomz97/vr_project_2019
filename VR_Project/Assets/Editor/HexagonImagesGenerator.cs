@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -245,6 +246,7 @@ public class HexagonImagesGenerator : EditorWindow
 
       RevealPath();
       ConfigureCamera(ref camera, ref hexagonalAspectRatio);
+      RenderHexagonSymbol(ref imageRenderer);
 
       if (renderMode == RenderModes.Scene)
       {
@@ -306,6 +308,33 @@ public class HexagonImagesGenerator : EditorWindow
           this.visibleChildren.Add(renderer);
         }
       }
+    }
+
+    private void ConfigureCamera(ref Camera camera, ref float hexagonalAspectRatio)
+    {
+      camera.aspect = hexagonalAspectRatio;
+      camera.orthographic = true;
+      camera.orthographicSize = this.CircumRadius;
+      camera.transform.Rotate(90, 180, 0);
+    }
+
+    private void RenderHexagonSymbol(ref GameObject imageRenderer)
+    {
+      GameObject hexagonSymbolContainer = new GameObject();
+      TextMeshPro hexagonSymbol = hexagonSymbolContainer.AddComponent<TextMeshPro>();
+
+      hexagonSymbol.color = Color.white;
+      hexagonSymbol.alignment = TextAlignmentOptions.Center;
+      hexagonSymbol.font = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/Materials/Bravura SDF.asset", typeof(TMP_FontAsset));
+      hexagonSymbol.fontSharedMaterial.SetTexture(ShaderUtilities.ID_FaceTex, (Texture)AssetDatabase.LoadAssetAtPath("Assets/Materials/Ground/T_rock_01_D.png", typeof(Texture)));
+      hexagonSymbol.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.1f);
+      hexagonSymbol.fontSharedMaterial.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.1f);
+      hexagonSymbol.rectTransform.sizeDelta = new Vector2(3, 3);
+      hexagonSymbol.text = "▲";
+
+      hexagonSymbolContainer.transform.SetParent(imageRenderer.transform, false);
+      hexagonSymbolContainer.transform.position = this.GameObject.transform.position + new Vector3(0, 0.2f, 0);
+      hexagonSymbolContainer.transform.rotation.Set(0, 0, 0, 0);
     }
 
     private void SaveImage(Texture2D screenshot, RenderModes renderMode)
