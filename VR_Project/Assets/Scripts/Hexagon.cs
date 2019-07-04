@@ -424,20 +424,15 @@ public class Hexagon
             throw new InvalidOperationException("Hexagon already loaded");
         }
 
-        
-
-        if (!HexagonGrid.debugMode)
+        /*if (!HexagonGrid.debugMode)
         {
             (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
 
             List<Hexagon> hexagonOfType;
             bool success = hexPrefabs.TryGetValue(encoding, out hexagonOfType);
             //Debug.Log("Success: " + success);
-            controlGrid.hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
-            if (offset / hexagonOfType.Count >= MAX_DUPLICATE_TILES)
-            {
-                throw new Exception("Maximum amount of instances from the same prefab has been exceeded");
-            }
+            //controlGrid.hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
+
             Hexagon prefab = hexagonOfType[offset % hexagonOfType.Count];
             controlGrid.hexPrefabsUsageIndex.Remove(encoding);
             controlGrid.hexPrefabsUsageIndex.Add(encoding, offset + 1);
@@ -449,43 +444,46 @@ public class Hexagon
             GameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
 
         }
-        else
-        {
-            (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
+        /*else
+        {*/
+        (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
 
-            controlGrid.hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
-            /*if (offset / hexagonOfType.Count >= MAX_DUPLICATE_TILES)
-            {
-                Debug.LogWarning("Maximum amount of instances from the same prefab has been exceeded");
-            }*/
-            controlGrid.hexPrefabsUsageIndex.Remove(encoding);
-            controlGrid.hexPrefabsUsageIndex.Add(encoding, offset + 1);
+        /*controlGrid.hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
+        controlGrid.hexPrefabsUsageIndex.Remove(encoding);
+        controlGrid.hexPrefabsUsageIndex.Add(encoding, offset + 1);*/
             
 
-            List<Hexagon> hexagonOfType;
-            bool success = hexPrefabs.TryGetValue(0, out hexagonOfType);
-            Hexagon prefab = hexagonOfType[0];
-            Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
+        List<Hexagon> hexagonOfType;
+        bool success = hexPrefabs.TryGetValue(HexagonGrid.debugMode ? 0 : encoding, out hexagonOfType);
+        if(!success) // tile not available
+        {
+            hexPrefabs.TryGetValue(0, out hexagonOfType);
+        }
+        Hexagon prefab = hexagonOfType[0]; //TODO: select next available
+        Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
 
 
-            gameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
-            Debug.Log("Exits 2: " + String.Join(", ", hasExit));
-            gameObject.GetComponent<HexagonProperties>().hasExit = hasExit;
+        gameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
+        Debug.Log("Exits 2: " + String.Join(", ", hasExit));
+        gameObject.GetComponent<HexagonProperties>().hasExit = hasExit;
+        UpdatePosition();
 
-            UpdatePosition();
 
-            Debug.Log("Exits 3: " + String.Join(", ", hasExit));
+        Debug.Log("Exits 3: " + String.Join(", ", hasExit));
+
+        if (HexagonGrid.debugMode || !success) // replace unavailable tiles by debug mode tiles
+        {
             // draw lines
 
-            float xDistance = 12.0f/2.0f;
+            float xDistance = 12.0f / 2.0f;
             float zDistance = Mathf.Sqrt(0.75f * Mathf.Pow(xDistance, 2));
 
             for (int i = 0; i < 6; i++)
             {
-                if(hasExit[i])
+                if (hasExit[i])
                 {
                     Vector3 edgePoint = new Vector3();
-                    switch ((Direction) i)
+                    switch ((Direction)i)
                     {
                         case Direction.Right:
                             edgePoint.x = xDistance;
@@ -495,7 +493,7 @@ public class Hexagon
                             break;
 
                         case Direction.TopRight:
-                            edgePoint.x = xDistance/2.0f;
+                            edgePoint.x = xDistance / 2.0f;
                             edgePoint.z = zDistance;
                             break;
                         case Direction.BotLeft:
@@ -520,13 +518,18 @@ public class Hexagon
                     linRen.gameObject.transform.position = gameObject.transform.position;
                     Debug.Log("Tile Position: " + gameObject.transform.position);
                     linRen.positionCount = 2;
-                    linRen.SetPosition(0, new Vector3(0.0f,0.0f,0.0f));
+                    linRen.SetPosition(0, new Vector3(0.0f, 0.0f, 0.0f));
                     linRen.SetPosition(1, edgePoint);
                     linRen.widthMultiplier = 0.1f;
                 }
             }
-            //dummy.Orientation = (Direction)UnityEngine.Random.Range(0, 6);
         }
+        else
+        {
+            this.Orientation = relDir;
+        }
+            //dummy.Orientation = (Direction)UnityEngine.Random.Range(0, 6);
+        //}
     }
 
     /*public static Hexagon Create(GameObject prefabHexagon, Direction orientation)
