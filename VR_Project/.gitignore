@@ -64,6 +64,5 @@ crashlytics-build.properties
 Generated Map Images
 
 # Miscellaneous files
-*.meta
 .DS_Store
 .vscode
