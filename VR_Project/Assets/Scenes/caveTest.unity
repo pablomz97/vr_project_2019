@@ -15874,7 +15874,7 @@ PrefabInstance:
     - target: {fileID: 6087736077846996387, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -30.654821
+      value: -31.229
       objectReference: {fileID: 0}
     - target: {fileID: 6087736077846996387, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
@@ -15884,7 +15884,7 @@ PrefabInstance:
     - target: {fileID: 6087736077846996387, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -16.177565
+      value: -15.842
       objectReference: {fileID: 0}
     - target: {fileID: 6087736077846996387, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
@@ -15929,7 +15929,7 @@ PrefabInstance:
     - target: {fileID: 6795423490389925955, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
       propertyPath: m_TranslationOffsets.Array.data[0].x
-      value: 0.010000229
+      value: 0.010002136
       objectReference: {fileID: 0}
     - target: {fileID: 6795423490389925955, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
@@ -15939,7 +15939,7 @@ PrefabInstance:
     - target: {fileID: 6795423490389925955, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
       propertyPath: m_TranslationOffsets.Array.data[0].z
-      value: -0.016002655
+      value: -0.016000748
       objectReference: {fileID: 0}
     - target: {fileID: 6795423490389925955, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
@@ -15954,7 +15954,7 @@ PrefabInstance:
     - target: {fileID: 207104966460793268, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
       propertyPath: m_TranslationOffsets.Array.data[0].x
-      value: 0.010000229
+      value: 0.010002136
       objectReference: {fileID: 0}
     - target: {fileID: 207104966460793268, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
@@ -15964,7 +15964,7 @@ PrefabInstance:
     - target: {fileID: 207104966460793268, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
       propertyPath: m_TranslationOffsets.Array.data[0].z
-      value: -0.016000748
+      value: -0.01599884
       objectReference: {fileID: 0}
     - target: {fileID: 207104966460793268, guid: 30401e53fe495c949815c3c1fa8147e0,
         type: 3}
@@ -17882,6 +17882,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_BoundingSphereOverride.z
       value: 1.0118015
+      objectReference: {fileID: 0}
+    - target: {fileID: 7757822384474113924, guid: 1ef7320c281622a4b93850f555a98621,
+        type: 3}
+      propertyPath: m_IntensityMultiplier
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5431453344242296415, guid: 1ef7320c281622a4b93850f555a98621, type: 3}
