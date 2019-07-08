@@ -18,8 +18,8 @@ public class MapGeneratorMST : MapGenerator
         HexagonGrid secondGrid = secondGridObj.GetComponent<HexagonGrid>();
         secondGrid.CreateHexagons();
 
-        RandomizeEdgeCost(grid);
-        RandomizeEdgeCost(secondGrid);
+        RandomizeEdgeCost(grid, 1);
+        RandomizeEdgeCost(secondGrid, 2);
 
         CalculateMST(grid);
         CalculateMST(secondGrid);

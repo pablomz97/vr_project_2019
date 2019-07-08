@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:VR_Project/Assets/Meshes/torch.meta
-guid: d414f9de57e1c604eb98a00a97dd88a2
-=======
-guid: 758942bd00b645d47a19195e3f83f2b6
->>>>>>> 3-hexagon-grid-data-structure:VR_Project/Assets/Resources/HexagonPrefabs.meta
+guid: 37e19508dbaa4854388c956b7aff54f1
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

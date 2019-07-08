@@ -12,7 +12,7 @@ public class LevelController : MonoBehaviour
         HexagonGrid mainGrid = new GameObject().AddComponent<HexagonGrid>();
 
         Hexagon.prefabsLoaded = true;
-        GameObject[] hexagonPrefabs = Resources.LoadAll<GameObject>("HexagonPrefabs");
+        GameObject[] hexagonPrefabs = GameObject.FindGameObjectsWithTag("HexTile");//Resources.LoadAll<GameObject>("HexagonPrefabs");
         Hexagon.hexPrefabs = new SortedDictionary<int, List<Hexagon>>();
         //mainGrid.hexPrefabsUsageIndex = new SortedDictionary<int, int>();
 
