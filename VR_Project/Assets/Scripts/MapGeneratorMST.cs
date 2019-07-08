@@ -18,8 +18,8 @@ public class MapGeneratorMST : MapGenerator
         HexagonGrid secondGrid = secondGridObj.GetComponent<HexagonGrid>();
         secondGrid.CreateHexagons();
 
-        RandomizeEdgeCost(grid);
-        RandomizeEdgeCost(secondGrid);
+        RandomizeEdgeCost(grid,2);
+        RandomizeEdgeCost(secondGrid,3);
 
         CalculateMST(grid);
         CalculateMST(secondGrid);
@@ -27,10 +27,11 @@ public class MapGeneratorMST : MapGenerator
         grid.Union(secondGrid);
         HexagonGrid.Destroy(secondGrid);
 
+        MatchConstraints();
         foreach(int key in grid.hexPrefabsUsageIndex.Keys)
         {
-            grid.hexPrefabsUsageIndex.TryGetValue(key, out int count);
-            Debug.Log("key: " + Convert.ToString(key, 2) + " count: " + count);
+            grid.hexPrefabsUsageIndex.TryGetValue(key, out List<Hexagon> hexagonsOfType);
+            Debug.Log("key: " + Convert.ToString(key, 2) + " count: " + hexagonsOfType.Count);
         }
     }
 
@@ -62,7 +63,6 @@ public class MapGeneratorMST : MapGenerator
 
         while(pQueue.Count != 0)
         {
-            //pQueue.TryGetValue(pQueue.Keys.First<int>(), out (int, int) vertex);
             (int, int) vertex = pQueue.Dequeue().Value;
 
             Hexagon vertexHex = mstGrid.GetHexagonAt(vertex.Item1, vertex.Item2);
