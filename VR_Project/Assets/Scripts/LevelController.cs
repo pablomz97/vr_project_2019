@@ -36,8 +36,7 @@ public class LevelController : MonoBehaviour
                     h
                 };
                 Hexagon.hexPrefabs.Add(h.Encoding, hexagonsOfSameType);
-                mainGrid.hexPrefabsUsageIndex.Add(h.Encoding, 0); //initalize as not used so far
-                Debug.Log("Encoding: " + Convert.ToString(h.Encoding, 2) + ", " + h.EncodeStart);
+                //Debug.Log("Encoding: " + Convert.ToString(h.Encoding, 2) + ", " + h.EncodeStart);
             }
         }
 

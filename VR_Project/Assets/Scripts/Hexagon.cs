@@ -63,19 +63,15 @@ public class Hexagon
     {
         if(controlGrid != null)
         {
-            bool entryExists = controlGrid.hexPrefabsUsageIndex.TryGetValue(Encoding, out int count);
+            bool entryExists = controlGrid.hexPrefabsUsageIndex.TryGetValue(Encoding, out List<Hexagon> hexagonsOfType);
 
-            if(entryExists)
+            if(!entryExists)
             {
-                count++;
-                controlGrid.hexPrefabsUsageIndex.Remove(Encoding);
-            }
-            else
-            {
-                count = 1;
+                hexagonsOfType = new List<Hexagon>();
+                controlGrid.hexPrefabsUsageIndex.Add(Encoding, hexagonsOfType);
             }
 
-            controlGrid.hexPrefabsUsageIndex.Add(Encoding, count);
+            hexagonsOfType.Add(this);
         }
         else
         {
@@ -87,16 +83,18 @@ public class Hexagon
     {
         if (controlGrid != null)
         {
-            controlGrid.hexPrefabsUsageIndex.TryGetValue(Encoding, out int count);
-
-            count--;
-            controlGrid.hexPrefabsUsageIndex.Remove(Encoding);
-
-            controlGrid.hexPrefabsUsageIndex.Add(Encoding, count);
+            if (controlGrid.hexPrefabsUsageIndex.TryGetValue(Encoding, out List<Hexagon> hexagonsOfType))
+            {
+                hexagonsOfType.Remove(this);
+            }
+            else
+            {
+                Debug.LogWarning("Could not remove Hexagon in dictionary because it was not in there.");
+            }
         }
         else
         {
-            Debug.LogWarning("Could not put Hexagon in dictionary because there is no control grid.");
+            Debug.LogWarning("Could not remove Hexagon in dictionary because there is no control grid.");
         }
     }
 
@@ -251,6 +249,11 @@ public class Hexagon
         }
 
         return new Hexagon(hasExit);
+    }
+
+    public Direction? DirectionOfContact(Hexagon neighbor)
+    {
+        return DirectionOfContact(neighbor.rowIndex, neighbor.colIndex);
     }
 
     public Direction? DirectionOfContact(int row, int col)
@@ -424,34 +427,7 @@ public class Hexagon
             throw new InvalidOperationException("Hexagon already loaded");
         }
 
-        /*if (!HexagonGrid.debugMode)
-        {
-            (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
-
-            List<Hexagon> hexagonOfType;
-            bool success = hexPrefabs.TryGetValue(encoding, out hexagonOfType);
-            //Debug.Log("Success: " + success);
-            //controlGrid.hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
-
-            Hexagon prefab = hexagonOfType[offset % hexagonOfType.Count];
-            controlGrid.hexPrefabsUsageIndex.Remove(encoding);
-            controlGrid.hexPrefabsUsageIndex.Add(encoding, offset + 1);
-
-            Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
-            Debug.Log("dir: " + dir + " EncodeStart: " + prefab.EncodeStart + " RelDir: " + relDir);
-
-            //instantiate:
-            GameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
-
-        }
-        /*else
-        {*/
         (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
-
-        /*controlGrid.hexPrefabsUsageIndex.TryGetValue(encoding, out int offset);
-        controlGrid.hexPrefabsUsageIndex.Remove(encoding);
-        controlGrid.hexPrefabsUsageIndex.Add(encoding, offset + 1);*/
-            
 
         List<Hexagon> hexagonOfType;
         bool success = hexPrefabs.TryGetValue(HexagonGrid.debugMode ? 0 : encoding, out hexagonOfType);
