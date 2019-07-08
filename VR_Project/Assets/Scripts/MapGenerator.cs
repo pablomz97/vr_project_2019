@@ -36,7 +36,7 @@ public abstract class MapGenerator
 
     protected void MatchConstraints()
     {
-        int maxCount = 4;
+        int maxCount = 5;
         byte[][] encodings = LevelController.allHexagonEncodings;
         for (int deg = 6; deg > 0; deg--)
         {
@@ -51,7 +51,7 @@ public abstract class MapGenerator
             }
         }
 
-        for (int deg = 1; deg <= 6; deg++)
+        /*/for (int deg = 1; deg <= 6; deg++)
         {
             for (int i = 0; i < encodings[deg].Length; i++)
             {
@@ -61,7 +61,7 @@ public abstract class MapGenerator
                     AugmentHexagonsByDeletion(deg, encodings[deg][i], maxCount, hexagonsOfType);
                 }
             }
-        }
+        }*/
     }
 
     private bool AugmentHexagonsByDeletion(int deg, byte encoding, int maxCount, List<Hexagon> hexagonsOfType)

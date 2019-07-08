@@ -439,8 +439,10 @@ public class Hexagon
         Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
 
 
-        gameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
+        gameObject = prefab.gameObject;//HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
         Debug.Log("Exits 2: " + String.Join(", ", hasExit));
+        if(!HexagonGrid.debugMode)
+            hexagonOfType.RemoveAt(0);
         gameObject.GetComponent<HexagonProperties>().hasExit = hasExit;
         UpdatePosition();
 
