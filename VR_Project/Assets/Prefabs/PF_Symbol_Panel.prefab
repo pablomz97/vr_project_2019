@@ -406,6 +406,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6360148139073639631}
+  - component: {fileID: 9155549413881818282}
   m_Layer: 0
   m_Name: PF_Symbol_Panel
   m_TagString: Untagged
@@ -439,6 +440,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9155549413881818282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3969795000731517966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 265c4c383ea40e72bba5c89bed31abfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startNumber: 0
+  bits:
+  - {fileID: 6156524784587276456}
+  - {fileID: 7980214673824471650}
+  - {fileID: 1404581522809077254}
+  - {fileID: 5604036733735208119}
+  - {fileID: 7966446250975715184}
+  - {fileID: 7199307117220478677}
+  - {fileID: 1953773010394728454}
 --- !u!1 &5604036733735208119
 GameObject:
   m_ObjectHideFlags: 0
