@@ -41,6 +41,14 @@
       "requirement": "optional"
     },
     {
+      "name": "/actions/default/in/GrabPinchLeft",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/default/in/GrabPinchRight",
+      "type": "boolean"
+    },
+    {
       "name": "/actions/default/out/Haptic",
       "type": "vibration"
     },

@@ -37,6 +37,7 @@ public class ControllerInput : MonoBehaviour
 		paint = false;
 		if (chalkLines[chalkLines.Count - 1].IsEmpty())
 		{
+			Destroy(chalkLines[chalkLines.Count - 1].gameObject);
 			chalkLines.RemoveAt(chalkLines.Count - 1);
 		}
 		Debug.Log("Trigger was released");
@@ -53,6 +54,7 @@ public class ControllerInput : MonoBehaviour
 			{
 				if (chalkLines[chalkLines.Count - 1].IsEmpty())
 				{
+					Destroy(chalkLines[chalkLines.Count - 1].gameObject);
 					chalkLines.RemoveAt(chalkLines.Count - 1);
 				}
 				chalk = new PaintChalk(hapticAction, chalkMat);

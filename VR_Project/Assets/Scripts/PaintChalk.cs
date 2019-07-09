@@ -10,6 +10,8 @@ public class PaintChalk
 
 	public float minDistance = 0.025f;
 
+	public GameObject gameObject;
+
 	private Material chalkMat;
 
 	private SteamVR_Action_Vibration hapticAction;
@@ -23,7 +25,8 @@ public class PaintChalk
 		this.hapticAction = hapticAction;
 		this.chalkMat = chalkMat;
 		Debug.Log("initialize line renderer");
-		lineRenderer = (new GameObject("chalkLine")).AddComponent<LineRenderer>();
+		gameObject = new GameObject("chalkLine");
+		lineRenderer = (gameObject).AddComponent<LineRenderer>();
 		lineRenderer.positionCount = 0;
 		pointList = new List<Vector3>();
 	}
@@ -34,12 +37,13 @@ public class PaintChalk
 		lineRenderer.alignment = LineAlignment.TransformZ;
 		lineRenderer.widthMultiplier = 0.07f;
 		lineRenderer.material = this.chalkMat;
+		lineRenderer.castShadows = false;
 	}
 
 
 	public void Add(Vector3 point){
 		if(lineRenderer.positionCount == 0 || (pointList[pointList.Count - 1] - point).magnitude >= minDistance){
-				point.y = 0.01f;
+				point.y = 0.079f;
 				AddPoint(point);
 		}
 	}
