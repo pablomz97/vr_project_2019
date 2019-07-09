@@ -35,13 +35,29 @@ public class ControllerInput : MonoBehaviour
 	public void OnTriggerReleased(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
 	{
 		paint = false;
+		if (chalkLines[chalkLines.Count - 1].IsEmpty())
+		{
+			chalkLines.RemoveAt(chalkLines.Count - 1);
+		}
 		Debug.Log("Trigger was released");
 	}
 
 	void FixedUpdate(){
 		if(paint){
 			Vector3 handPos = GameObject.Find("RightHand").transform.position;
-			chalk.Add(handPos);
+			if(handPos.y <= 0.15f)
+			{
+				chalk.Add(handPos);
+			}
+			else
+			{
+				if (chalkLines[chalkLines.Count - 1].IsEmpty())
+				{
+					chalkLines.RemoveAt(chalkLines.Count - 1);
+				}
+				chalk = new PaintChalk(hapticAction, chalkMat);
+				chalkLines.Add(chalk);
+			}
 		}
 	}
 
