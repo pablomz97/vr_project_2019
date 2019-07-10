@@ -207,7 +207,6 @@ public class HexagonImagesGenerator : EditorWindow
 
       RevealPath();
       ConfigureCamera(ref camera, ref hexagonalAspectRatio);
-      RenderHexagonSymbol(ref imageRenderer);
 
       if (renderMode == RenderModes.Scene)
       {
