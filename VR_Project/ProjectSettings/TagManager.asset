@@ -4,6 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - gravSrc
+  - projectile
+  - HexagonPlatform
   - HexTile
   layers:
   - Default

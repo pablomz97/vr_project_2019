@@ -60,3 +60,9 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Generated Hexagon Image Renders
+Generated Map Images
+
+# Miscellaneous files
+.DS_Store
+.vscode
