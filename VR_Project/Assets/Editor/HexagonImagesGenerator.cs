@@ -93,35 +93,11 @@ public class HexagonImagesGenerator : EditorWindow
   {
     Hexagon currentlySelectedHexagon = hexagons[selectedHexagonIndex];
 
-    PrepareScene();
+    HideAllLights();
 
     currentlySelectedHexagon.RenderImage(CurrentRenderMode);
 
-    RestoreScene();
-  }
-
-  private void PrepareScene()
-  {
-    Hexagon currentlySelectedHexagon = hexagons[selectedHexagonIndex];
-    Renderer[] gameObjectsToHide = GameObject.FindObjectsOfType<Renderer>()
-                                    .Except(
-                                      new Renderer[] { currentlySelectedHexagon.GameObject.GetComponent<Renderer>() }
-                                        .Union(currentlySelectedHexagon.Children)
-                                    )
-                                    .ToArray();
-
-    HideGameObjects(gameObjectsToHide);
-    HideAllLights();
-
-    this.currentlyHiddenGameObjects = gameObjectsToHide;
-  }
-
-  private void HideGameObjects(Renderer[] gameObjectsToHide)
-  {
-    foreach (Renderer renderer in gameObjectsToHide)
-    {
-      renderer.enabled = false;
-    }
+    ShowAllLights();
   }
 
   private void HideAllLights()
@@ -129,22 +105,6 @@ public class HexagonImagesGenerator : EditorWindow
     GameObject.FindObjectsOfType<Light>()
               .ToList()
               .ForEach(lightSource => lightSource.enabled = false);
-  }
-
-  private void RestoreScene()
-  {
-    ShowGameObjects(this.currentlyHiddenGameObjects);
-    ShowAllLights();
-
-    this.currentlyHiddenGameObjects = Array.Empty<Renderer>();
-  }
-
-  private void ShowGameObjects(Renderer[] gameObjectsToShow)
-  {
-    foreach (Renderer renderer in gameObjectsToShow)
-    {
-      renderer.enabled = true;
-    }
   }
 
   private void ShowAllLights()
