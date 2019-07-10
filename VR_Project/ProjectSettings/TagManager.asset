@@ -6,8 +6,8 @@ TagManager:
   tags:
   - gravSrc
   - projectile
-  - Hexagon
   - HexagonPlatform
+  - HexTile
   layers:
   - Default
   - TransparentFX
