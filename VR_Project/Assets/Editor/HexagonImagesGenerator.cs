@@ -72,6 +72,7 @@ public class HexagonImagesGenerator : EditorWindow
   private void FindAllHexagons()
   {
     hexagons = GameObject.FindGameObjectsWithTag("HexTile")
+                          .Where(gameObject => !gameObject.name.Contains("dummy"))
                           .Select(gameObject => new Hexagon(gameObject))
                           .ToArray();
 
