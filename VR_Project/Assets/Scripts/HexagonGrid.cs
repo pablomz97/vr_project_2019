@@ -37,11 +37,16 @@ public class HexagonGrid : MonoBehaviour
 
     public void Union(HexagonGrid other)
     {
+        Union(other, 0);
+    }
+
+    public void Union(HexagonGrid other, float pruningFactor)
+    {
         for(int i = 0; i < gridHeight; i++)
         {
             for(int j = 0; j < gridWidth; j++)
             {
-                SetHexagonAt(Hexagon.Union(GetHexagonAt(i, j), other.GetHexagonAt(i, j)), i, j);
+                SetHexagonAt(Hexagon.Union(GetHexagonAt(i, j), other.GetHexagonAt(i, j), pruningFactor), i, j);
             }
         }
     }
@@ -77,9 +82,14 @@ public class HexagonGrid : MonoBehaviour
         {
             for (int j = 0; j < colCount; j++)
             {
-                GetHexagonAt(i, j).GameObject.GetComponent<staticBatchOnLoad>().Bake();
+                GameObject currentTile = GetHexagonAt(i, j).GameObject;
+
+                currentTile.transform.parent = gameObject.transform;
+                currentTile.GetComponent<staticBatchOnLoad>().Bake();
             }
         }
+
+        StaticBatchingUtility.Combine(gameObject);
     }
 
     public void SetHexagonAt(Hexagon h, int row, int col)

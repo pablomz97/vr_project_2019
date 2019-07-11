@@ -24,7 +24,7 @@ public class PaintChalk
 	{
 		this.hapticAction = hapticAction;
 		this.chalkMat = chalkMat;
-		Debug.Log("initialize line renderer");
+		//Debug.Log("initialize line renderer");
 		gameObject = new GameObject("chalkLine");
 		lineRenderer = (gameObject).AddComponent<LineRenderer>();
 		lineRenderer.positionCount = 0;

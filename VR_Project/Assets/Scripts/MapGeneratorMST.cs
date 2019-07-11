@@ -25,7 +25,7 @@ public class MapGeneratorMST : MapGenerator
         CalculateMST(grid);
         CalculateMST(secondGrid);
 
-        grid.Union(secondGrid);
+        grid.Union(secondGrid, 0.8f);
         HexagonGrid.Destroy(secondGrid);
 
         MatchConstraints();

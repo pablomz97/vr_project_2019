@@ -7,7 +7,7 @@ public class staticBatchOnLoad : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      StaticBatchingUtility.Combine(gameObject);
+      //StaticBatchingUtility.Combine(gameObject);
       //Bake();
     }
 
@@ -20,9 +20,12 @@ public class staticBatchOnLoad : MonoBehaviour
     //updates all static data which can be updated at runtime, this should be called once all objects have been placed at their final location
     public void Bake()
     {
-      ReflectionProbe probeComponent = gameObject.transform.Find("ReflectionProbe").gameObject.GetComponent<ReflectionProbe>();
+      Transform rct = gameObject.transform.Find("ReflectionProbe");
 
-      if (probeComponent != null)
+      if (rct != null)
+      {
+        ReflectionProbe probeComponent = rct.gameObject.GetComponent<ReflectionProbe>();
         probeComponent.RenderProbe();
+      }
     }
 }

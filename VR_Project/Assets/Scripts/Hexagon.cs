@@ -241,11 +241,19 @@ public class Hexagon
 
     public static Hexagon Union(Hexagon h1, Hexagon h2)
     {
+        return Union(h1, h2, 0);
+    }
+
+    public static Hexagon Union(Hexagon h1, Hexagon h2, float pruningFactor)
+    {
         bool[] hasExit = new bool[6];
 
         for(int i = 0; i < hasExit.Length; i++)
         {
-            hasExit[i] = h1.hasExit[i] || h2.hasExit[i];
+            hasExit[i] = h1.hasExit[i] || (h2.hasExit[i] && UnityEngine.Random.value > pruningFactor);
+            Hexagon other = h1.GetNeighbor((Direction) i);
+            if(other != null)
+                other.SetHasExit((Direction)((i + 3) % 6), hasExit[i]);
         }
 
         return new Hexagon(hasExit);
@@ -438,10 +446,16 @@ public class Hexagon
         Hexagon prefab = hexagonOfType[0]; //TODO: select next available
         Hexagon.Direction relDir = (Hexagon.Direction)((dir - prefab.EncodeStart + 6) % 6);
 
-
-        gameObject = prefab.gameObject;//HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
+        if(!HexagonGrid.debugMode && success)
+        {       
+            gameObject = prefab.gameObject;
+        }
+        else
+        {
+            gameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
+        }
         Debug.Log("Exits 2: " + String.Join(", ", hasExit));
-        if(!HexagonGrid.debugMode)
+        if(!HexagonGrid.debugMode && success)
             hexagonOfType.RemoveAt(0);
         gameObject.GetComponent<HexagonProperties>().hasExit = hasExit;
         UpdatePosition();

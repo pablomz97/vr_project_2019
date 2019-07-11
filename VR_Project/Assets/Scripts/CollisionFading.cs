@@ -13,7 +13,7 @@ public class CollisionFading : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
 		//Debug.Log("entered");
-		SteamVR_Fade.Start(Color.black, fadeDuration);
+		SteamVR_Fade.Start(new Color(0.65f, 0.04f, 0.04f, 1), fadeDuration);
 		collidingCount++;
 	}
 
