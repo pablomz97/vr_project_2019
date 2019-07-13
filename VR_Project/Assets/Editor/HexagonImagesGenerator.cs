@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using TMPro;
 using UnityEditor;
@@ -136,6 +138,21 @@ public class HexagonImagesGenerator : EditorWindow
   private class Hexagon
   {
     private UnityEngine.Object hexagon;
+    private OrderedDictionary hexagonSymbolOffsets = new OrderedDictionary() {
+        { "c01", new Vector3(1.35f, 0, -1.1f) },
+        { "c02", new Vector3(-0.85f, 0, 0.5f) },
+        { "c03", new Vector3(-0.25f, 0, 0) },
+        { "c05", new Vector3(0.2f, 0, -0.6f) },
+        { "c06", new Vector3(-0.05f, 0, -0.45f) },
+        { "c07", new Vector3(0.75f, 0, -0.75f) },
+        { "c08", new Vector3(0.5f, 0, -1.25f) },
+        { "c09", new Vector3(-0.1f, 0, -0.95f) },
+        { "c10", new Vector3(-0.1f, 0, -0.75f) },
+        { "c11", new Vector3(-0.2f, 0, -1.25f) },
+        { "r01", new Vector3(0.15f, 0, -0.3f) },
+        { "r02_v2", new Vector3(1.15f, 0, 0.5f) },
+        { "r02", new Vector3(0.25f, 0, 0) }
+      };
     private List<Renderer> hiddenChildren = new List<Renderer>();
     private List<Renderer> visibleChildren = new List<Renderer>();
 
@@ -197,6 +214,7 @@ public class HexagonImagesGenerator : EditorWindow
       int height = 1920;
       int width = System.Convert.ToInt32(height * hexagonalAspectRatio);
 
+      GameObject hexagonSymbolContainer;
       GameObject imageRenderer = new GameObject();
       Camera camera = imageRenderer.AddComponent<Camera>();
       RenderTexture intermediateTexture = new RenderTexture(width, height, 24);
@@ -207,6 +225,7 @@ public class HexagonImagesGenerator : EditorWindow
 
       RevealPath();
       ConfigureCamera(ref camera, ref hexagonalAspectRatio);
+      RenderHexagonSymbol(ref imageRenderer, out hexagonSymbolContainer);
 
       if (renderMode == RenderModes.Scene)
       {
@@ -248,6 +267,7 @@ public class HexagonImagesGenerator : EditorWindow
       DestroyImmediate(screenshot);
       DestroyImmediate(renderTexture);
       DestroyImmediate(imageRenderer);
+      DestroyImmediate(hexagonSymbolContainer);
     }
 
     private void RevealPath()
@@ -278,10 +298,14 @@ public class HexagonImagesGenerator : EditorWindow
       camera.transform.Rotate(90, 180, 0);
     }
 
-    private void RenderHexagonSymbol(ref GameObject imageRenderer)
+    private void RenderHexagonSymbol(ref GameObject imageRenderer, out GameObject hexagonSymbolContainer)
     {
-      GameObject hexagonSymbolContainer = new GameObject();
+      float yDirectionAlteration = 0.1f;
+      Vector2 hexagonSymbolSize = new Vector2(3, 3);
+
+      hexagonSymbolContainer = new GameObject();
       TextMeshPro hexagonSymbol = hexagonSymbolContainer.AddComponent<TextMeshPro>();
+      Renderer teleportArea = this.Children.Where(renderer => renderer.gameObject.name == "tpArea").First();
 
       hexagonSymbol.color = Color.white;
       hexagonSymbol.alignment = TextAlignmentOptions.Center;
@@ -293,8 +317,21 @@ public class HexagonImagesGenerator : EditorWindow
       hexagonSymbol.text = "▲";
 
       hexagonSymbolContainer.transform.SetParent(imageRenderer.transform, false);
-      hexagonSymbolContainer.transform.position = this.GameObject.transform.position + new Vector3(0, 0.2f, 0);
+      hexagonSymbolContainer.transform.position = this.GameObject.transform.position + GetHexagonSymbolOffset() + new Vector3(0, yDirectionAlteration, 0);
       hexagonSymbolContainer.transform.rotation.Set(0, 0, 0, 0);
+    }
+
+    private Vector3 GetHexagonSymbolOffset()
+    {
+      foreach (DictionaryEntry hexagonSymbolOffset in hexagonSymbolOffsets)
+      {
+        if (this.Name.Contains((string)hexagonSymbolOffset.Key))
+        {
+          return (Vector3)hexagonSymbolOffset.Value;
+        }
+      }
+
+      return Vector3.zero;
     }
 
     private void SaveImage(Texture2D screenshot, RenderModes renderMode)
