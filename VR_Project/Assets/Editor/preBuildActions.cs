@@ -4,7 +4,7 @@ using UnityEditor.SceneManagement;
 
 public class preBuildActions
 {
-  public static string[] scenes = { "Assets/Scenes/caveTest.unity" };
+  public static string[] scenes = { "Assets/Scenes/caveMain.unity" };
 
   [MenuItem("Tools/Bake Scenes")]
   public static void buildLighting()
