@@ -265,6 +265,7 @@ public class HexagonImagesGenerator : EditorWindow
       camera.targetTexture = null;
       RenderTexture.active = null;
       DestroyImmediate(screenshot);
+      DestroyImmediate(intermediateTexture);
       DestroyImmediate(renderTexture);
       DestroyImmediate(imageRenderer);
       DestroyImmediate(hexagonSymbolContainer);
