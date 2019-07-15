@@ -7,6 +7,7 @@ public class LevelController : MonoBehaviour
 {
     // Start is called before the first frame update
     public static byte[][] allHexagonEncodings = new byte[7][]; //the first index represents the degree, i.e. the amount of exits
+    public GameObject wallPrefab;
     void Start()
     {
         HexagonGrid mainGrid = new GameObject().AddComponent<HexagonGrid>();

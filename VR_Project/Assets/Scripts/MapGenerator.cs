@@ -21,6 +21,7 @@ public abstract class MapGenerator
 
     public void RandomizeEdgeCost(HexagonGrid grid, int seed)
     {
+        Debug.Log("Seed: " + seed);
         System.Random rng = new System.Random(seed);
         for(int i = 0; i < grid.GridHeight; i++)
         {
@@ -36,6 +37,9 @@ public abstract class MapGenerator
 
     protected void MatchConstraints()
     {
+        // Set upper right half-edge for treasure room
+        grid.GetHexagonAt(grid.GridHeight - 1, grid.GridWidth - 1).SetHasExit(Hexagon.Direction.BotRight, true);
+
         int maxCount = 5;
         byte[][] encodings = LevelController.allHexagonEncodings;
         for (int deg = 6; deg > 0; deg--)
@@ -62,6 +66,7 @@ public abstract class MapGenerator
                 }
             }
         }*/
+
     }
 
     private bool AugmentHexagonsByDeletion(int deg, byte encoding, int maxCount, List<Hexagon> hexagonsOfType)
@@ -110,7 +115,17 @@ public abstract class MapGenerator
                         neighbors.Add(hexToModify.GetNeighbor((Hexagon.Direction)(((int)orientation + trueIndices[j]) % 6)));
                     }
 
-                    bool canBeRemoved = IsConnected(hexToModify, neighbors, new List<Hexagon>());
+                    bool canBeRemoved;
+
+                    // ensure that connection to treasure room is not deleted
+                    if (hexToModify.rowIndex == grid.GridHeight - 1 && hexToModify.colIndex == grid.GridWidth - 1 && hexToModify.GetHasExit(Hexagon.Direction.BotRight) == false)
+                    {
+                        canBeRemoved = false;
+                    }
+                    else
+                    {
+                        canBeRemoved = IsConnected(hexToModify, neighbors, new List<Hexagon>());
+                    }
 
                     //Re-insert edges to avoid breaking the hexagons encoding
                     for (int j = 0; j < trueIndices.Length; j++)
@@ -225,5 +240,36 @@ public abstract class MapGenerator
         }
 
         return targets.Count == 0;
+    }
+
+    protected int AccuDistToNeighbors(Hexagon start)
+    {
+        int amtNeighborsFound = 0;
+        int accuDist = 0;
+        HashSet<Hexagon> visited = new HashSet<Hexagon>();
+        Queue<(Hexagon,int)> q = new Queue<(Hexagon,int)>();
+        q.Enqueue((start,0));
+        visited.Add(start);
+        while(amtNeighborsFound < 6 && q.Count != 0)
+        {
+            (Hexagon, int) current = q.Dequeue();
+            if(current.Item1.IsNeighborOf(start))
+            {
+                amtNeighborsFound++;
+                accuDist += current.Item2;
+                Debug.Log("Distance to neighbor (" + current.Item1.rowIndex + "," + current.Item1.colIndex + "): "+ current.Item2);
+            }
+
+            for(int dir = 0; dir < 6; dir++)
+            {
+                if(current.Item1.IsConnected((Hexagon.Direction)dir) && !visited.Contains(current.Item1.GetNeighbor((Hexagon.Direction)dir)))
+                {
+                    visited.Add(current.Item1.GetNeighbor((Hexagon.Direction)dir));
+                    q.Enqueue((current.Item1.GetNeighbor((Hexagon.Direction)dir), current.Item2 + 1));
+                }
+            }
+        }
+
+        return accuDist;
     }
 }

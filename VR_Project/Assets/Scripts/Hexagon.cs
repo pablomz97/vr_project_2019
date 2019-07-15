@@ -8,6 +8,7 @@ public class Hexagon
     public enum Direction { Right, TopRight, TopLeft, Left, BotLeft, BotRight };
     public int rowIndex = -1;
     public int colIndex = -1;
+    private bool isTreasureRoom = false;
     public HexagonGrid controlGrid;
     public Direction orientation = Direction.Right;
     private bool[] hasExit = new bool[6];
@@ -259,6 +260,18 @@ public class Hexagon
         return new Hexagon(hasExit);
     }
 
+    public bool IsNeighborOf(Hexagon other)
+    {
+        for(int dir = 0; dir < 6; dir++)
+        {
+            if(GetNeighbor((Direction)dir) == other)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Direction? DirectionOfContact(Hexagon neighbor)
     {
         return DirectionOfContact(neighbor.rowIndex, neighbor.colIndex);
@@ -378,6 +391,20 @@ public class Hexagon
         }
     }
 
+    public bool IsTreasureRoom
+    {
+        get => isTreasureRoom;
+        set
+        {
+            if (value)
+            {
+                rowIndex = controlGrid.GridHeight;
+                colIndex = controlGrid.GridWidth - 1;
+                isTreasureRoom = true;
+            }
+        }
+    }
+
     public GameObject GameObject
     {
         get
@@ -423,6 +450,24 @@ public class Hexagon
         return this.HasExitGlobal(d) && this.GetNeighbor(d).HasExitGlobal((Direction)(((int)d + 3) % 6));
     }
 
+    public bool IsTreasureEntry(Direction d)
+    {
+        return colIndex == controlGrid.GridWidth - 1 && rowIndex == controlGrid.GridHeight - 1 && d == Direction.BotRight;
+    }
+
+    public void CreateWalls()
+    {
+        for(int dir = 0; dir < 6; dir++)
+        {
+            if(!IsConnected((Direction)dir) && HasExitGlobal((Direction)dir) && !IsTreasureEntry((Direction)dir))
+            {
+                GameObject wall = HexagonGrid.Instantiate(GameObject.Find("LevelController").GetComponent<LevelController>().wallPrefab, GameObject.transform.position, Quaternion.identity);
+                Hexagon wallHex = new Hexagon(wall);
+                wallHex.Orientation = (Direction)dir;
+            }
+        }
+    }
+
     /// <summary>
     /// Creates a Hexagon which has exits at the specified directions. 
     /// </summary>
@@ -437,9 +482,8 @@ public class Hexagon
 
         (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
 
-        List<Hexagon> hexagonOfType;
-        bool success = hexPrefabs.TryGetValue(HexagonGrid.debugMode ? 0 : encoding, out hexagonOfType);
-        if(!success) // tile not available
+        bool success = hexPrefabs.TryGetValue(HexagonGrid.debugMode ? 0 : encoding, out List<Hexagon> hexagonOfType);
+        if (!success) // tile not available
         {
             hexPrefabs.TryGetValue(0, out hexagonOfType);
         }
@@ -520,6 +564,8 @@ public class Hexagon
         {
             this.Orientation = relDir;
         }
+
+        CreateWalls();
             //dummy.Orientation = (Direction)UnityEngine.Random.Range(0, 6);
         //}
     }
