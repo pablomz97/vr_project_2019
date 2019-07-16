@@ -44,11 +44,18 @@ public class HexagonGrid : MonoBehaviour
 
     public void Union(HexagonGrid other, float pruningFactor)
     {
+        Union(other, pruningFactor, UnityEngine.Random.Range(int.MinValue, int.MaxValue));
+    }
+
+    public void Union(HexagonGrid other, float pruningFactor, int seed)
+    {
+        Debug.Log("pruning seed: " + seed);
+        System.Random random = new System.Random(seed);
         for(int i = 0; i < gridHeight; i++)
         {
             for(int j = 0; j < gridWidth; j++)
             {
-                SetHexagonAt(Hexagon.Union(GetHexagonAt(i, j), other.GetHexagonAt(i, j), pruningFactor), i, j);
+                SetHexagonAt(Hexagon.Union(GetHexagonAt(i, j), other.GetHexagonAt(i, j), pruningFactor, random), i, j);
             }
         }
     }

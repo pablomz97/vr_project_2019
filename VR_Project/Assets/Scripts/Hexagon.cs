@@ -242,16 +242,15 @@ public class Hexagon
 
     public static Hexagon Union(Hexagon h1, Hexagon h2)
     {
-        return Union(h1, h2, 0);
+        return Union(h1, h2, 0, new System.Random());
     }
 
-    public static Hexagon Union(Hexagon h1, Hexagon h2, float pruningFactor)
+    public static Hexagon Union(Hexagon h1, Hexagon h2, float pruningFactor, System.Random random)
     {
         bool[] hasExit = new bool[6];
-
         for(int i = 0; i < hasExit.Length; i++)
         {
-            hasExit[i] = h1.hasExit[i] || (h2.hasExit[i] && UnityEngine.Random.value > pruningFactor);
+            hasExit[i] = h1.hasExit[i] || (h2.hasExit[i] && random.NextDouble() > pruningFactor);
             Hexagon other = h1.GetNeighbor((Direction) i);
             if(other != null)
                 other.SetHasExit((Direction)((i + 3) % 6), hasExit[i]);
