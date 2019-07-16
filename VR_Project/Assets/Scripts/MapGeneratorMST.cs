@@ -29,6 +29,9 @@ public class MapGeneratorMST : MapGenerator
         HexagonGrid.Destroy(secondGrid);
 
         MatchConstraints();
+        grid.keyTarget = CalcTreasureRoomLock();
+        Debug.Log("Maxtile: " + grid.keyTarget.rowIndex + "," + grid.keyTarget.colIndex);
+        
         foreach(int key in grid.hexPrefabsUsageIndex.Keys)
         {
             grid.hexPrefabsUsageIndex.TryGetValue(key, out List<Hexagon> hexagonsOfType);

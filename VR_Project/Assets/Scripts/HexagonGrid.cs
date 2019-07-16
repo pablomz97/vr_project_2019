@@ -10,9 +10,11 @@ public class HexagonGrid : MonoBehaviour
     private Vector3 position; // position of the first tile's center
     private float tileDiam = 12.0f; // distance from an edge to the opposite edge by default
     public SortedDictionary<int, List<Hexagon>> hexPrefabsUsageIndex = new SortedDictionary<int, List<Hexagon>>();
-    public static readonly bool debugMode = false;
+    public static readonly bool debugMode = true;
     public readonly bool vertexDistance = true; // use distance from vertex to vertex for tileDiam
     private Hexagon[,] hexagons;
+    private Hexagon treasureRoom;
+    public Hexagon keyTarget;
    
 
     // Start is called before the first frame update
@@ -78,6 +80,11 @@ public class HexagonGrid : MonoBehaviour
             }
         }
 
+        GameObject[] treasureRoomObjs = GameObject.FindGameObjectsWithTag("TreasureRoom");
+
+        TreasureRoom = new Hexagon(treasureRoomObjs[UnityEngine.Random.Range(0, treasureRoomObjs.Length)]);
+        TreasureRoom.UpdatePosition();
+
         for (int i = 0; i < rowCount; i++)
         {
             for (int j = 0; j < colCount; j++)
@@ -88,6 +95,8 @@ public class HexagonGrid : MonoBehaviour
                 currentTile.GetComponent<staticBatchOnLoad>().Bake();
             }
         }
+
+
 
         StaticBatchingUtility.Combine(gameObject);
     }
@@ -130,4 +139,14 @@ public class HexagonGrid : MonoBehaviour
         get { return tileDiam; }
     }
 
+    public Hexagon TreasureRoom
+    {
+        get { return treasureRoom; }
+        set
+        {
+            value.controlGrid = this;
+            value.IsTreasureRoom = true;
+            treasureRoom = value;
+        }
+    }
 }
