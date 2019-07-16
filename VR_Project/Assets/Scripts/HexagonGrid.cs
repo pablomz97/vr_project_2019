@@ -14,6 +14,7 @@ public class HexagonGrid : MonoBehaviour
     public readonly bool vertexDistance = true; // use distance from vertex to vertex for tileDiam
     private Hexagon[,] hexagons;
     private Hexagon treasureRoom;
+    public Hexagon keyTarget;
    
 
     // Start is called before the first frame update

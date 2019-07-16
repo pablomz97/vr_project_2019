@@ -69,6 +69,30 @@ public abstract class MapGenerator
 
     }
 
+    /// <summary>
+    /// Determine which hexagon is used for the code at the entrance to the treasure room
+    /// </summary>
+    /// <returns></returns>
+    public Hexagon CalcTreasureRoomLock()
+    {
+        int max = 0;
+        (int, int) maxIndex = (1, 1);
+        for (int row = 1; row < grid.GridHeight - 1; row++)
+        {
+            for (int col = 1; col < grid.GridWidth - 1; col++)
+            {
+                int temp = AccuDistToNeighbors(grid.GetHexagonAt(row, col));
+                if (temp > max)
+                {
+                    max = temp;
+                    maxIndex = (row, col);
+                }
+            }
+        }
+
+        return grid.GetHexagonAt(maxIndex.Item1, maxIndex.Item2);
+    }
+
     private bool AugmentHexagonsByDeletion(int deg, byte encoding, int maxCount, List<Hexagon> hexagonsOfType)
     {
         bool[] hasExit = Hexagon.EncodingToExitArray(encoding, Hexagon.Direction.Right);

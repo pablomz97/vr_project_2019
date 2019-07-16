@@ -29,23 +29,8 @@ public class MapGeneratorMST : MapGenerator
         HexagonGrid.Destroy(secondGrid);
 
         MatchConstraints();
-
-        int max = 0;
-        (int, int) maxIndex = (1, 1);
-        for(int row = 1; row < grid.GridHeight - 1; row++)
-        {
-            for(int col = 1; col < grid.GridWidth - 1; col++)
-            {
-                int temp = AccuDistToNeighbors(grid.GetHexagonAt(row, col));
-                if(temp > max)
-                {
-                    max = temp;
-                    maxIndex = (row, col);
-                }
-            }
-        }
-
-        Debug.Log("maxIndex: " + maxIndex);
+        grid.keyTarget = CalcTreasureRoomLock();
+        Debug.Log("Maxtile: " + grid.keyTarget.rowIndex + "," + grid.keyTarget.colIndex);
         
         foreach(int key in grid.hexPrefabsUsageIndex.Keys)
         {
