@@ -8,6 +8,9 @@ TagManager:
   - projectile
   - HexagonPlatform
   - HexTile
+  - TreasureRoom
+  - Hexagon
+  - SymbolBit
   layers:
   - Default
   - TransparentFX
