@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 813039514121892515}
   m_Layer: 0
   m_Name: Cylinder_b3
-  m_TagString: Untagged
+  m_TagString: SymbolBit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,7 +87,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1404581522809077254}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 1.75
@@ -107,6 +107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bitIndex: 2
   baseBrightness: 1.4
+  highlightBrightnessOffset: 0.75
 --- !u!1 &1509055714416455090
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,7 +215,7 @@ GameObject:
   - component: {fileID: 782465597738447070}
   m_Layer: 0
   m_Name: Cylinder_b7
-  m_TagString: Untagged
+  m_TagString: SymbolBit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -286,7 +287,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953773010394728454}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 1.75
@@ -306,6 +307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bitIndex: 6
   baseBrightness: 1.4
+  highlightBrightnessOffset: 0.75
 --- !u!1 &3969795000731517966
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,7 +479,7 @@ GameObject:
   - component: {fileID: 8863697310522436718}
   m_Layer: 0
   m_Name: Cylinder_b4
-  m_TagString: Untagged
+  m_TagString: SymbolBit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -549,7 +551,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5604036733735208119}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 1.75
@@ -569,6 +571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bitIndex: 3
   baseBrightness: 1.4
+  highlightBrightnessOffset: 0.75
 --- !u!1 &5721855433718219517
 GameObject:
   m_ObjectHideFlags: 0
@@ -676,7 +679,7 @@ GameObject:
   - component: {fileID: 5687253433869478848}
   m_Layer: 0
   m_Name: Cylinder_b1
-  m_TagString: Untagged
+  m_TagString: SymbolBit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -748,7 +751,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6156524784587276456}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 1.75
@@ -768,6 +771,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bitIndex: 0
   baseBrightness: 1.4
+  highlightBrightnessOffset: 0.75
 --- !u!1 &7130942455589531047
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,7 +879,7 @@ GameObject:
   - component: {fileID: 891832962914473380}
   m_Layer: 0
   m_Name: Cylinder_b6
-  m_TagString: Untagged
+  m_TagString: SymbolBit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -947,7 +951,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7199307117220478677}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 1.75
@@ -967,6 +971,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bitIndex: 5
   baseBrightness: 1.4
+  highlightBrightnessOffset: 0.75
 --- !u!1 &7966446250975715184
 GameObject:
   m_ObjectHideFlags: 0
@@ -982,7 +987,7 @@ GameObject:
   - component: {fileID: 4485502700643277822}
   m_Layer: 0
   m_Name: Cylinder_b5
-  m_TagString: Untagged
+  m_TagString: SymbolBit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1054,7 +1059,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7966446250975715184}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 1.75
@@ -1074,6 +1079,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bitIndex: 4
   baseBrightness: 1.4
+  highlightBrightnessOffset: 0.75
 --- !u!1 &7980214673824471650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,7 +1095,7 @@ GameObject:
   - component: {fileID: 9114386462936414116}
   m_Layer: 0
   m_Name: Cylinder_b2
-  m_TagString: Untagged
+  m_TagString: SymbolBit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1161,7 +1167,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7980214673824471650}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 1.75
@@ -1181,6 +1187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bitIndex: 1
   baseBrightness: 1.4
+  highlightBrightnessOffset: 0.75
 --- !u!1 &9033336906750816154
 GameObject:
   m_ObjectHideFlags: 0
