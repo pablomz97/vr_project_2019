@@ -203,7 +203,7 @@ public class HexagonImagesGenerator : EditorWindow
       get { return hexagon.name; }
     }
 
-    public byte SymbolNumber
+    public sbyte SymbolNumber
     {
       get { return ((HexagonProperties)this.GameObject.GetComponent(typeof(HexagonProperties))).symbolNumber; }
     }
@@ -229,7 +229,7 @@ public class HexagonImagesGenerator : EditorWindow
 
       RevealPath();
       ConfigureCamera(ref camera, ref hexagonalAspectRatio);
-      RenderHexagonSymbol(ref imageRenderer);
+      if (this.SymbolNumber > -1) RenderHexagonSymbol(ref imageRenderer);
 
       if (renderMode == RenderModes.Scene)
       {
