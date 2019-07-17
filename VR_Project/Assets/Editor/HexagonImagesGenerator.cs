@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -139,18 +138,19 @@ public class HexagonImagesGenerator : EditorWindow
   {
     private UnityEngine.Object hexagon;
     private OrderedDictionary hexagonSymbolOffsets = new OrderedDictionary() {
-        { "c01", new Vector3(1.35f, 0, -1.1f) },
-        { "c02", new Vector3(-0.85f, 0, 0.5f) },
-        { "c03", new Vector3(-0.25f, 0, 0) },
-        { "c05", new Vector3(0.2f, 0, -0.6f) },
-        { "c06", new Vector3(-0.05f, 0, -0.45f) },
-        { "c07", new Vector3(0.75f, 0, -0.75f) },
-        { "c08", new Vector3(0.5f, 0, -1.25f) },
-        { "c09", new Vector3(-0.1f, 0, -0.95f) },
-        { "c10", new Vector3(-0.1f, 0, -0.75f) },
-        { "c11", new Vector3(-0.2f, 0, -1.25f) },
-        { "r01", new Vector3(0.15f, 0, -0.3f) },
-        { "r02_v2", new Vector3(1.15f, 0, 0.5f) },
+        { "c01", new Vector3(1, 0, -0.75f) },
+        { "c02", new Vector3(-0.5f, 0, 0.75f) },
+        { "c03", new Vector3(-0.25f, 0, 0.5f) },
+        { "c04", new Vector3(0, 0, 0.25f) },
+        { "c05", new Vector3(0.2f, 0, -0.25f) },
+        { "c06", new Vector3(-0.05f, 0, 0) },
+        { "c07", new Vector3(0.75f, 0, -0.25f) },
+        { "c08", new Vector3(0.25f, 0, -0.75f) },
+        { "c09", new Vector3(0, 0, -0.75f) },
+        { "c10", new Vector3(-0.1f, 0, -0.5f) },
+        { "c11", new Vector3(-0.2f, 0, -0.9f) },
+        { "r01", new Vector3(0.15f, 0, -0.05f) },
+        { "r02_v2", new Vector3(1.4f, 0, 0.5f) },
         { "r02", new Vector3(0.25f, 0, 0) }
       };
     private List<Renderer> hiddenChildren = new List<Renderer>();
@@ -203,6 +203,11 @@ public class HexagonImagesGenerator : EditorWindow
       get { return hexagon.name; }
     }
 
+    public byte SymbolNumber
+    {
+      get { return ((HexagonProperties)this.GameObject.GetComponent(typeof(HexagonProperties))).symbolNumber; }
+    }
+
     public void Focus()
     {
       Selection.activeGameObject = this.GameObject;
@@ -214,7 +219,6 @@ public class HexagonImagesGenerator : EditorWindow
       int height = 1920;
       int width = System.Convert.ToInt32(height * hexagonalAspectRatio);
 
-      GameObject hexagonSymbolContainer;
       GameObject imageRenderer = new GameObject();
       Camera camera = imageRenderer.AddComponent<Camera>();
       RenderTexture intermediateTexture = new RenderTexture(width, height, 24);
@@ -225,7 +229,7 @@ public class HexagonImagesGenerator : EditorWindow
 
       RevealPath();
       ConfigureCamera(ref camera, ref hexagonalAspectRatio);
-      RenderHexagonSymbol(ref imageRenderer, out hexagonSymbolContainer);
+      RenderHexagonSymbol(ref imageRenderer);
 
       if (renderMode == RenderModes.Scene)
       {
@@ -268,7 +272,6 @@ public class HexagonImagesGenerator : EditorWindow
       DestroyImmediate(intermediateTexture);
       DestroyImmediate(renderTexture);
       DestroyImmediate(imageRenderer);
-      DestroyImmediate(hexagonSymbolContainer);
     }
 
     private void RevealPath()
@@ -299,27 +302,24 @@ public class HexagonImagesGenerator : EditorWindow
       camera.transform.Rotate(90, 180, 0);
     }
 
-    private void RenderHexagonSymbol(ref GameObject imageRenderer, out GameObject hexagonSymbolContainer)
+    private void RenderHexagonSymbol(ref GameObject imageRenderer)
     {
       float yDirectionAlteration = 0.1f;
       Vector2 hexagonSymbolSize = new Vector2(3, 3);
-
-      hexagonSymbolContainer = new GameObject();
-      TextMeshPro hexagonSymbol = hexagonSymbolContainer.AddComponent<TextMeshPro>();
+      GameObject hexagonSymbolContainer = new GameObject();
+      GameObject hexagonSymbol = (GameObject)Instantiate(AssetDatabase.LoadAssetAtPath("Assets/Prefabs/PF_Symbol_Panel.prefab", typeof(GameObject)), Vector3.zero, Quaternion.Euler(-90, 0, 0));
+      SymbolPanel hexagonSymbolPanel = (SymbolPanel)hexagonSymbol.GetComponent(typeof(SymbolPanel));
       Renderer teleportArea = this.Children.Where(renderer => renderer.gameObject.name == "tpArea").First();
 
-      hexagonSymbol.color = Color.white;
-      hexagonSymbol.alignment = TextAlignmentOptions.Center;
-      hexagonSymbol.font = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/Materials/Bravura SDF.asset", typeof(TMP_FontAsset));
-      hexagonSymbol.fontSharedMaterial.SetTexture(ShaderUtilities.ID_FaceTex, (Texture)AssetDatabase.LoadAssetAtPath("Assets/Materials/Ground/T_rock_01_D.png", typeof(Texture)));
-      hexagonSymbol.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.1f);
-      hexagonSymbol.fontSharedMaterial.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.1f);
-      hexagonSymbol.rectTransform.sizeDelta = new Vector2(3, 3);
-      hexagonSymbol.text = "▲";
+      hexagonSymbol.transform.Find("symbol_panel_base").GetComponent<Renderer>().enabled = false;
 
       hexagonSymbolContainer.transform.SetParent(imageRenderer.transform, false);
       hexagonSymbolContainer.transform.position = this.GameObject.transform.position + GetHexagonSymbolOffset() + new Vector3(0, yDirectionAlteration, 0);
-      hexagonSymbolContainer.transform.rotation.Set(0, 0, 0, 0);
+
+      hexagonSymbol.transform.SetParent(hexagonSymbolContainer.transform, false);
+      hexagonSymbol.transform.localScale += new Vector3(1.25f, 0, 1.25f);
+
+      hexagonSymbolPanel.setNumber(this.SymbolNumber);
     }
 
     private Vector3 GetHexagonSymbolOffset()
