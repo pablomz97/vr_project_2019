@@ -498,9 +498,15 @@ public class Hexagon
             gameObject = HexagonGrid.Instantiate(prefab.gameObject, new Vector3(0, 0, 0), Quaternion.identity);
         }
         Debug.Log("Exits 2: " + String.Join(", ", hasExit));
-        if(!HexagonGrid.debugMode && success)
+        if (!HexagonGrid.debugMode && success)
+        {
             hexagonOfType.RemoveAt(0);
-        gameObject.GetComponent<HexagonProperties>().hasExit = hasExit;
+            hasExit = gameObject.GetComponent<HexagonProperties>().hasExit;
+        }
+        else
+        {
+            gameObject.GetComponent<HexagonProperties>().hasExit = hasExit;
+        }
         UpdatePosition();
 
 
