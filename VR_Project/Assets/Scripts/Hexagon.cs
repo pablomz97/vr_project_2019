@@ -460,7 +460,9 @@ public class Hexagon
         {
             if(!IsConnected((Direction)dir) && HasExitGlobal((Direction)dir) && !IsTreasureEntry((Direction)dir))
             {
-                GameObject wall = HexagonGrid.Instantiate(GameObject.Find("LevelController").GetComponent<LevelController>().wallPrefab, GameObject.transform.position, Quaternion.identity);
+                GameObject wallPrefab = GameObject.Find("PF_Wall");
+                //GameObject wall = HexagonGrid.Instantiate(GameObject.Find("LevelController").GetComponent<LevelController>().wallPrefab, GameObject.transform.position, Quaternion.identity);
+                GameObject wall = HexagonGrid.Instantiate(wallPrefab, GameObject.transform.position, Quaternion.identity);
                 Hexagon wallHex = new Hexagon(wall);
                 wallHex.Orientation = (Direction)dir;
             }

@@ -27,5 +27,17 @@ public class staticBatchOnLoad : MonoBehaviour
         ReflectionProbe probeComponent = rct.gameObject.GetComponent<ReflectionProbe>();
         probeComponent.RenderProbe();
       }
+
+      Transform rctg = gameObject.transform.Find("ReflectionProbeGroup");
+
+      if(rctg != null)
+      {
+        foreach(Transform child in rctg)
+        {
+          ReflectionProbe probeComponent = child.gameObject.GetComponent<ReflectionProbe>();
+          probeComponent.RenderProbe();
+        }
+      }
+
     }
 }

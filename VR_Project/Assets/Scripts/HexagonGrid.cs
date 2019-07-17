@@ -104,6 +104,8 @@ public class HexagonGrid : MonoBehaviour
             }
         }
 
+        TreasureRoom.GameObject.GetComponent<staticBatchOnLoad>().Bake();
+
 
 
         StaticBatchingUtility.Combine(gameObject);
