@@ -93,6 +93,70 @@ public abstract class MapGenerator
         return grid.GetHexagonAt(maxIndex.Item1, maxIndex.Item2);
     }
 
+    public void placeHintObjects()
+    {
+        GameObject treasurePrefab = grid.treasureRoom.GameObject;
+        Transform hintPos =  treasurePrefab.transform.Find("HintPosition");
+
+        GameObject[] hintObjects = GameObject.FindGameObjectsWithTag("HintObject");
+        int correctIndex = UnityEngine.Random.Range(0, hintObjects.Length);
+
+        HexagonGrid.Instantiate(hintObjects[correctIndex], hintPos.position, Quaternion.identity);
+
+        List<Hexagon> hexTiles = grid.GetHexagons();
+        hexTiles.Remove(grid.keyTarget);
+        hexTiles.Remove(grid.GetHexagonAt(0, 0));
+
+        Vector2 offset = UnityEngine.Random.insideUnitCircle;
+        Vector3 targetPos = new Vector3(grid.keyTarget.GameObject.transform.position.x + offset.x, grid.keyTarget.GameObject.transform.position.y, grid.keyTarget.GameObject.transform.position.z + offset.y);
+
+        HexagonGrid.Instantiate(hintObjects[correctIndex], targetPos, Quaternion.identity);
+
+        int i = UnityEngine.Random.Range(0, hexTiles.Count);
+        while(hexTiles[i].TreasureRoomCode() == grid.keyTarget.TreasureRoomCode())
+        {
+            i = UnityEngine.Random.Range(0, hexTiles.Count);
+        }
+
+        targetPos = new Vector3(hexTiles[i].GameObject.transform.position.x + offset.x, hexTiles[i].GameObject.transform.position.y, hexTiles[i].GameObject.transform.position.z + offset.y);
+
+        HexagonGrid.Instantiate(hintObjects[correctIndex], targetPos, Quaternion.identity);
+        hexTiles.Remove(hexTiles[i]);
+
+        for(int j = 0; j < hintObjects.Length; ++j)
+        {
+            if(j == correctIndex)
+                continue;
+
+            for(int k = 0; k < 2; ++k)
+            {
+                int index = UnityEngine.Random.Range(0, hexTiles.Count);
+                targetPos = new Vector3(hexTiles[index].GameObject.transform.position.x + offset.x, hexTiles[index].GameObject.transform.position.y, hexTiles[index].GameObject.transform.position.z + offset.y);
+
+                HexagonGrid.Instantiate(hintObjects[j], targetPos, Quaternion.identity);
+                hexTiles.Remove(hexTiles[index]);
+            }
+        }
+
+    }
+
+    public void initializeDoor()
+    {
+        GameObject treasurePrefab = grid.treasureRoom.GameObject;
+        DoorLocked Door = treasurePrefab.transform.Find("PF_Door_locked").Find("animRoot").gameObject.GetComponent<DoorLocked>();
+        
+        Door.middleSymbol.GetComponent<SymbolPanel>().setNumber(grid.keyTarget.TreasureRoomCode());
+
+
+        for(int dir = 0; dir < 6; ++dir)
+        {
+            Hexagon neighbor = grid.keyTarget.GetNeighbor((Hexagon.Direction)dir);
+            Door.targetCode[dir]= neighbor.TreasureRoomCode();
+        }
+
+        placeHintObjects();
+    }
+
     private bool AugmentHexagonsByDeletion(int deg, byte encoding, int maxCount, List<Hexagon> hexagonsOfType)
     {
         bool[] hasExit = Hexagon.EncodingToExitArray(encoding, Hexagon.Direction.Right);

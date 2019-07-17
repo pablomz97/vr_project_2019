@@ -10,7 +10,7 @@ public class LevelController : MonoBehaviour
     public GameObject wallPrefab;
     void Start()
     {
-        HexagonGrid mainGrid = new GameObject().AddComponent<HexagonGrid>();
+        HexagonGrid mainGrid = new GameObject("HexagonGrid").AddComponent<HexagonGrid>();
 
         Hexagon.prefabsLoaded = true;
         GameObject[] hexagonPrefabs = GameObject.FindGameObjectsWithTag("HexTile");//Resources.LoadAll<GameObject>("HexagonPrefabs");
@@ -112,6 +112,8 @@ public class LevelController : MonoBehaviour
         mapGen.GenerateMap();
 
         mainGrid.LoadHexagons();
+
+        mapGen.initializeDoor();
 
         /*
         for(int row = 0; row < gridHeight; row++)

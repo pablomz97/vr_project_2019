@@ -71,9 +71,11 @@ public class ControllerInput : MonoBehaviour
 		if(paint)
 		{
 			Vector3 handPos = GameObject.Find("RightHand").transform.position;
-			if(handPos.y <= 0.15f)
+			Debug.Log("controller height: " + handPos.y);
+			if(handPos.y <= (0.15f + 0.13f))
 			{
 				chalk.Add(handPos);
+				Debug.Log("adding point to chalk line"); 
 			}
 			else
 			{
@@ -91,7 +93,7 @@ public class ControllerInput : MonoBehaviour
 			lastSymbolBit.GetComponent<SymbolBit>().setHighlighted(false);
 		
 		colliderPosition = transform.Find("Sphere").position;
-		Collider[] hitColliders = Physics.OverlapSphere(colliderPosition, 0.025f);
+		Collider[] hitColliders = Physics.OverlapSphere(colliderPosition, 0.05f);
 
 		lastSymbolBit = null;
 		if(hitColliders.Length != 0)

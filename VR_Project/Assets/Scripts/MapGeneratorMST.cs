@@ -26,7 +26,7 @@ public class MapGeneratorMST : MapGenerator
         CalculateMST(secondGrid);
 
         grid.Union(secondGrid, 0.8f, -1364483737);
-        HexagonGrid.Destroy(secondGrid);
+        HexagonGrid.Destroy(secondGrid.gameObject);
 
         MatchConstraints();
         grid.keyTarget = CalcTreasureRoomLock();
@@ -36,7 +36,7 @@ public class MapGeneratorMST : MapGenerator
         {
             grid.hexPrefabsUsageIndex.TryGetValue(key, out List<Hexagon> hexagonsOfType);
             Debug.Log("key: " + Convert.ToString(key, 2) + " count: " + hexagonsOfType.Count);
-        }
+        }        
     }
 
     private void CalculateMST(HexagonGrid mstGrid)

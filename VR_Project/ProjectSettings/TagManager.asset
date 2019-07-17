@@ -11,6 +11,7 @@ TagManager:
   - TreasureRoom
   - Hexagon
   - SymbolBit
+  - HintObject
   layers:
   - Default
   - TransparentFX

@@ -13,7 +13,7 @@ public class HexagonGrid : MonoBehaviour
     public static readonly bool debugMode = false;
     public readonly bool vertexDistance = true; // use distance from vertex to vertex for tileDiam
     private Hexagon[,] hexagons;
-    private Hexagon treasureRoom;
+    public Hexagon treasureRoom;
     public Hexagon keyTarget;
    
 
@@ -35,6 +35,23 @@ public class HexagonGrid : MonoBehaviour
     public Hexagon GetHexagonAt(int row, int col)
     {
         return hexagons[row, col];
+    }
+
+    public List<Hexagon> GetHexagons()
+    {
+        List<Hexagon> res = new List<Hexagon>(49);
+
+        int rowCount = hexagons.GetLength(0);
+        int colCount = hexagons.GetLength(1);
+        for (int i = 0; i < rowCount; i++)
+        {
+            for(int j = 0; j < colCount; j++)
+            {
+                res.Add(GetHexagonAt(i, j));
+            }
+        }
+
+        return res;
     }
 
     public void Union(HexagonGrid other)

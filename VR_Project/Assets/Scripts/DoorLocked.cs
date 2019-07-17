@@ -8,7 +8,7 @@ public class DoorLocked : MonoBehaviour
   private bool solved = false;
   public GameObject[] symbols;
   public GameObject middleSymbol;
-  int[] targetCode = new int[]{127, 127, 127, 127, 127, 127};
+  public int[] targetCode = new int[]{127, 127, 127, 127, 127, 127};
 
   // Start is called before the first frame update
   void Start()
