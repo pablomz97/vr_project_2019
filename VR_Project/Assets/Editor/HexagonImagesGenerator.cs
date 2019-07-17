@@ -72,7 +72,7 @@ public class HexagonImagesGenerator : EditorWindow
 
   private void FindAllHexagons()
   {
-    hexagons = GameObject.FindGameObjectsWithTag("HexTile")
+    hexagons = GameObject.FindGameObjectsWithTag("HexTile").Append(GameObject.FindGameObjectWithTag("TreasureRoom"))
                           .Where(gameObject => !gameObject.name.Contains("dummy"))
                           .Select(gameObject => new Hexagon(gameObject))
                           .ToArray();
@@ -278,10 +278,13 @@ public class HexagonImagesGenerator : EditorWindow
     {
       List<Renderer> hiddenHexagonChildren = new List<Renderer>();
 
+      float threshold = this.Name == "PF_Hex_treasure" ? 1.65f : 1.25f;
+
       foreach (Renderer renderer in Children)
       {
         if (renderer.gameObject != this.GameObject &&
-            renderer.transform.position.y - 1.25 > this.GameObject.transform.position.y)
+            (renderer.transform.position.y - threshold > this.GameObject.transform.position.y ||
+            renderer.name == "doorframe"))
         {
           renderer.enabled = false;
 
