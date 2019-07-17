@@ -210,7 +210,8 @@ public class HexagonImagesGenerator : EditorWindow
 
     public byte SymbolNumber
     {
-      get {
+      get
+      {
         byte hexagonEncoding = Hexagon.ExitArrayToEncoding(this.HexagonProperties.hasExit).Item1;
         byte hexagonSymbolNumber = Hexagon.TreasureRoomCode(hexagonEncoding, this.HexagonProperties.variant);
 
@@ -320,21 +321,33 @@ public class HexagonImagesGenerator : EditorWindow
     private void RenderHexagonSymbol(ref GameObject imageRenderer)
     {
       float yDirectionAlteration = 0.1f;
-      Vector2 hexagonSymbolSize = new Vector2(3, 3);
       GameObject hexagonSymbolContainer = new GameObject();
       GameObject hexagonSymbol = (GameObject)Instantiate(AssetDatabase.LoadAssetAtPath("Assets/Prefabs/PF_Symbol_Panel.prefab", typeof(GameObject)), Vector3.zero, Quaternion.Euler(-90, 0, 0));
       SymbolPanel hexagonSymbolPanel = (SymbolPanel)hexagonSymbol.GetComponent(typeof(SymbolPanel));
-      Renderer teleportArea = this.Children.Where(renderer => renderer.gameObject.name == "tpArea").First();
 
       hexagonSymbol.transform.Find("symbol_panel_base").GetComponent<Renderer>().enabled = false;
 
       hexagonSymbolContainer.transform.SetParent(imageRenderer.transform, false);
-      hexagonSymbolContainer.transform.position = this.GameObject.transform.position + GetHexagonSymbolOffset() + new Vector3(0, yDirectionAlteration, 0);
+      hexagonSymbolContainer.transform.SetPositionAndRotation(this.GameObject.transform.position + GetHexagonSymbolOffset() + new Vector3(0, yDirectionAlteration, 0), Quaternion.Euler(-90, 180, 0));
 
       hexagonSymbol.transform.SetParent(hexagonSymbolContainer.transform, false);
       hexagonSymbol.transform.localScale += new Vector3(1.25f, 0, 1.25f);
 
       hexagonSymbolPanel.setNumber(this.SymbolNumber);
+
+      foreach (GameObject bit in hexagonSymbolPanel.bits)
+      {
+        SymbolBit symbolBit = (SymbolBit)bit.GetComponent(typeof(SymbolBit));
+        MeshRenderer renderer = (MeshRenderer)symbolBit.GetComponent(typeof(MeshRenderer));
+        Material symbolBitMaterial = new Material(renderer.sharedMaterial);
+
+        if (!symbolBit.isActive())
+        {
+          float colorChannel = symbolBit.baseBrightness * 0.25f;
+          symbolBitMaterial.SetColor("_EmissionColor", new Color(colorChannel, colorChannel, colorChannel));
+          renderer.sharedMaterial = symbolBitMaterial;
+        }
+      }
     }
 
     private Vector3 GetHexagonSymbolOffset()

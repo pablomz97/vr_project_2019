@@ -30,6 +30,11 @@ public class SymbolBit : MonoBehaviour
         updateCallback = callback;
     }
 
+    public bool isActive()
+    {
+        return active;
+    }
+
     public void toggleActive()
     {
         if(editable)
