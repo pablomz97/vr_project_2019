@@ -129,6 +129,25 @@ public class LevelController : MonoBehaviour
         //hexagons[2, 1].GetNeighbor(Hexagon.Direction.TopRight).Orientation = Hexagon.Direction.TopLeft;
 
         //hexagons[0, 0].GetComponent<Hexagon>().SetNeighbor(Hexagon.Direction.TopLeft, new GameObject());
+
+
+        //Test treasure room code
+        HashSet<byte> mappings = new HashSet<byte>();
+
+        for(byte i = 1; i < 128; i++)
+        {
+            byte res = Hexagon.TreasureRoomCode((byte)(i % 64), i >= 64);
+            if(!mappings.Add(res))
+            {
+                Debug.LogError("code not unique");
+            }
+            Debug.Log(i + " maps to " + res);
+        }
+
+        if(!mappings.Add((byte)1))
+        {
+            Debug.Log("1 already contained as expected.");
+        }
     }
 
     // Update is called once per frame
