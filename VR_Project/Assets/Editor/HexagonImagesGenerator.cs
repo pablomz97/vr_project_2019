@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
 
 public class HexagonImagesGenerator : EditorWindow
 {
   private Renderer[] currentlyHiddenGameObjects;
-  private Hexagon[] hexagons;
+  private HexagonRender[] hexagons;
   public enum RenderModes { Scene, SceneDepth, WeightedSceneDepth };
   private int selectedHexagonIndex = 0;
   private int selectedRenderModeIndex = 0;
@@ -71,9 +72,9 @@ public class HexagonImagesGenerator : EditorWindow
 
   private void FindAllHexagons()
   {
-    hexagons = GameObject.FindGameObjectsWithTag("HexTile")
+    hexagons = GameObject.FindGameObjectsWithTag("HexTile").Append(GameObject.FindGameObjectWithTag("TreasureRoom"))
                           .Where(gameObject => !gameObject.name.Contains("dummy"))
-                          .Select(gameObject => new Hexagon(gameObject))
+                          .Select(gameObject => new HexagonRender(gameObject))
                           .ToArray();
 
     Array.Sort(hexagons, (firstHexagon, secondHexagon) => String.Compare(firstHexagon.Name, secondHexagon.Name));
@@ -91,7 +92,7 @@ public class HexagonImagesGenerator : EditorWindow
 
   private void RenderImageOfSelectedHexagon()
   {
-    Hexagon currentlySelectedHexagon = hexagons[selectedHexagonIndex];
+    HexagonRender currentlySelectedHexagon = hexagons[selectedHexagonIndex];
 
     HideAllLights();
 
@@ -133,13 +134,29 @@ public class HexagonImagesGenerator : EditorWindow
     GetWindowWithRect<HexagonImagesGenerator>(new Rect(0, 0, 350, 205), true, "Generate Map Images for Hexagons", true);
   }
 
-  private class Hexagon
+  private class HexagonRender
   {
     private UnityEngine.Object hexagon;
+    private OrderedDictionary hexagonSymbolOffsets = new OrderedDictionary() {
+        { "c01", new Vector3(1, 0, -0.75f) },
+        { "c02", new Vector3(-0.5f, 0, 0.75f) },
+        { "c03", new Vector3(-0.25f, 0, 0.5f) },
+        { "c04", new Vector3(0, 0, 0.25f) },
+        { "c05", new Vector3(0.2f, 0, -0.25f) },
+        { "c06", new Vector3(-0.05f, 0, 0) },
+        { "c07", new Vector3(0.75f, 0, -0.25f) },
+        { "c08", new Vector3(0.25f, 0, -0.75f) },
+        { "c09", new Vector3(0, 0, -0.75f) },
+        { "c10", new Vector3(-0.1f, 0, -0.5f) },
+        { "c11", new Vector3(-0.2f, 0, -0.9f) },
+        { "r01", new Vector3(0.15f, 0, -0.05f) },
+        { "r02_v2", new Vector3(1.4f, 0, 0.5f) },
+        { "r02", new Vector3(0.25f, 0, 0) }
+      };
     private List<Renderer> hiddenChildren = new List<Renderer>();
     private List<Renderer> visibleChildren = new List<Renderer>();
 
-    public Hexagon(UnityEngine.Object gameObject) => hexagon = gameObject;
+    public HexagonRender(UnityEngine.Object gameObject) => hexagon = gameObject;
 
     public Renderer[] Children
     {
@@ -181,9 +198,27 @@ public class HexagonImagesGenerator : EditorWindow
       get { return hexagon as GameObject; }
     }
 
+    public HexagonProperties HexagonProperties
+    {
+      get { return (HexagonProperties)this.GameObject.GetComponent(typeof(HexagonProperties)); }
+    }
+
     public string Name
     {
       get { return hexagon.name; }
+    }
+
+    public byte SymbolNumber
+    {
+      get
+      {
+        byte hexagonEncoding = Hexagon.ExitArrayToEncoding(this.HexagonProperties.hasExit).Item1;
+        byte hexagonSymbolNumber = Hexagon.TreasureRoomCode(hexagonEncoding, this.HexagonProperties.variant);
+
+        Debug.Log($"{hexagonEncoding} {this.HexagonProperties.variant} {hexagonSymbolNumber}");
+
+        return hexagonSymbolNumber;
+      }
     }
 
     public void Focus()
@@ -207,6 +242,7 @@ public class HexagonImagesGenerator : EditorWindow
 
       RevealPath();
       ConfigureCamera(ref camera, ref hexagonalAspectRatio);
+      RenderHexagonSymbol(ref imageRenderer);
 
       if (renderMode == RenderModes.Scene)
       {
@@ -246,6 +282,7 @@ public class HexagonImagesGenerator : EditorWindow
       camera.targetTexture = null;
       RenderTexture.active = null;
       DestroyImmediate(screenshot);
+      DestroyImmediate(intermediateTexture);
       DestroyImmediate(renderTexture);
       DestroyImmediate(imageRenderer);
     }
@@ -254,10 +291,13 @@ public class HexagonImagesGenerator : EditorWindow
     {
       List<Renderer> hiddenHexagonChildren = new List<Renderer>();
 
+      float threshold = this.Name == "PF_Hex_treasure" ? 1.65f : 1.25f;
+
       foreach (Renderer renderer in Children)
       {
         if (renderer.gameObject != this.GameObject &&
-            renderer.transform.position.y - 1.25 > this.GameObject.transform.position.y)
+            (renderer.transform.position.y - threshold > this.GameObject.transform.position.y ||
+            renderer.name == "doorframe"))
         {
           renderer.enabled = false;
 
@@ -280,21 +320,47 @@ public class HexagonImagesGenerator : EditorWindow
 
     private void RenderHexagonSymbol(ref GameObject imageRenderer)
     {
+      float yDirectionAlteration = 0.1f;
       GameObject hexagonSymbolContainer = new GameObject();
-      TextMeshPro hexagonSymbol = hexagonSymbolContainer.AddComponent<TextMeshPro>();
+      GameObject hexagonSymbol = (GameObject)Instantiate(AssetDatabase.LoadAssetAtPath("Assets/Prefabs/PF_Symbol_Panel.prefab", typeof(GameObject)), Vector3.zero, Quaternion.Euler(-90, 0, 0));
+      SymbolPanel hexagonSymbolPanel = (SymbolPanel)hexagonSymbol.GetComponent(typeof(SymbolPanel));
 
-      hexagonSymbol.color = Color.white;
-      hexagonSymbol.alignment = TextAlignmentOptions.Center;
-      hexagonSymbol.font = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/Materials/Bravura SDF.asset", typeof(TMP_FontAsset));
-      hexagonSymbol.fontSharedMaterial.SetTexture(ShaderUtilities.ID_FaceTex, (Texture)AssetDatabase.LoadAssetAtPath("Assets/Materials/Ground/T_rock_01_D.png", typeof(Texture)));
-      hexagonSymbol.fontSharedMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, 0.1f);
-      hexagonSymbol.fontSharedMaterial.SetFloat(ShaderUtilities.ID_OutlineSoftness, 0.1f);
-      hexagonSymbol.rectTransform.sizeDelta = new Vector2(3, 3);
-      hexagonSymbol.text = "▲";
+      hexagonSymbol.transform.Find("symbol_panel_base").GetComponent<Renderer>().enabled = false;
 
       hexagonSymbolContainer.transform.SetParent(imageRenderer.transform, false);
-      hexagonSymbolContainer.transform.position = this.GameObject.transform.position + new Vector3(0, 0.2f, 0);
-      hexagonSymbolContainer.transform.rotation.Set(0, 0, 0, 0);
+      hexagonSymbolContainer.transform.SetPositionAndRotation(this.GameObject.transform.position + GetHexagonSymbolOffset() + new Vector3(0, yDirectionAlteration, 0), Quaternion.Euler(-90, 180, 0));
+
+      hexagonSymbol.transform.SetParent(hexagonSymbolContainer.transform, false);
+      hexagonSymbol.transform.localScale += new Vector3(1.25f, 0, 1.25f);
+
+      hexagonSymbolPanel.setNumber(this.SymbolNumber);
+
+      foreach (GameObject bit in hexagonSymbolPanel.bits)
+      {
+        SymbolBit symbolBit = (SymbolBit)bit.GetComponent(typeof(SymbolBit));
+        MeshRenderer renderer = (MeshRenderer)symbolBit.GetComponent(typeof(MeshRenderer));
+        Material symbolBitMaterial = new Material(renderer.sharedMaterial);
+
+        if (!symbolBit.isActive())
+        {
+          float colorChannel = symbolBit.baseBrightness * 0.25f;
+          symbolBitMaterial.SetColor("_EmissionColor", new Color(colorChannel, colorChannel, colorChannel));
+          renderer.sharedMaterial = symbolBitMaterial;
+        }
+      }
+    }
+
+    private Vector3 GetHexagonSymbolOffset()
+    {
+      foreach (DictionaryEntry hexagonSymbolOffset in hexagonSymbolOffsets)
+      {
+        if (this.Name.Contains((string)hexagonSymbolOffset.Key))
+        {
+          return (Vector3)hexagonSymbolOffset.Value;
+        }
+      }
+
+      return Vector3.zero;
     }
 
     private void SaveImage(Texture2D screenshot, RenderModes renderMode)

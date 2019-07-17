@@ -30,6 +30,11 @@ public class SymbolBit : MonoBehaviour
         updateCallback = callback;
     }
 
+    public bool isActive()
+    {
+        return active;
+    }
+
     public void toggleActive()
     {
         if(editable)
@@ -41,10 +46,11 @@ public class SymbolBit : MonoBehaviour
         Debug.Log("setting bit " + bitIndex + "to " + isActive);
         active = isActive;
         MeshRenderer renderer = GetComponent<MeshRenderer>();
-        Material mat = renderer.material;
+        Material mat = new Material(renderer.sharedMaterial);
         mat.SetColor("_EmissionColor", new Color(active ? baseBrightness : 0,
                                                  active ? baseBrightness : 0,
                                                  active ? baseBrightness : 0));
+        renderer.sharedMaterial = mat;
         
         if(updateCallback != null)
             updateCallback();
