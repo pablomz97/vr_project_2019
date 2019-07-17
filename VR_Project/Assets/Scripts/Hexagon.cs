@@ -18,6 +18,7 @@ public class Hexagon
     private Direction encodeStart;
 
     public static SortedDictionary<int, List<Hexagon>> hexPrefabs;
+    public static byte salt = 85;
     
     public static readonly int MAX_DUPLICATE_TILES = 100;
     public static bool prefabsLoaded = false;
@@ -97,6 +98,18 @@ public class Hexagon
         {
             Debug.LogWarning("Could not remove Hexagon in dictionary because there is no control grid.");
         }
+    }
+
+    public byte TreasureRoomCode()
+    {
+        return TreasureRoomCode(encoding, gameObject.GetComponent<HexagonProperties>().variant);
+    }
+
+    public static byte TreasureRoomCode(byte encoding, bool variant)
+    {
+        byte variantCode = Convert.ToByte(encoding + (Convert.ToByte(variant) << 6));
+        Debug.Log("variant code: " + variantCode);
+        return Convert.ToByte((((variantCode + salt) % 127) * 200) % 127 + 1);
     }
 
     private (int,int) GetNeighborIndex(Direction d)
