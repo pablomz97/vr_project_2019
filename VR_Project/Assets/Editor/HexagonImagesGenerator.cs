@@ -9,7 +9,7 @@ using UnityEngine;
 public class HexagonImagesGenerator : EditorWindow
 {
   private Renderer[] currentlyHiddenGameObjects;
-  private Hexagon[] hexagons;
+  private HexagonRender[] hexagons;
   public enum RenderModes { Scene, SceneDepth, WeightedSceneDepth };
   private int selectedHexagonIndex = 0;
   private int selectedRenderModeIndex = 0;
@@ -74,7 +74,7 @@ public class HexagonImagesGenerator : EditorWindow
   {
     hexagons = GameObject.FindGameObjectsWithTag("HexTile").Append(GameObject.FindGameObjectWithTag("TreasureRoom"))
                           .Where(gameObject => !gameObject.name.Contains("dummy"))
-                          .Select(gameObject => new Hexagon(gameObject))
+                          .Select(gameObject => new HexagonRender(gameObject))
                           .ToArray();
 
     Array.Sort(hexagons, (firstHexagon, secondHexagon) => String.Compare(firstHexagon.Name, secondHexagon.Name));
@@ -92,7 +92,7 @@ public class HexagonImagesGenerator : EditorWindow
 
   private void RenderImageOfSelectedHexagon()
   {
-    Hexagon currentlySelectedHexagon = hexagons[selectedHexagonIndex];
+    HexagonRender currentlySelectedHexagon = hexagons[selectedHexagonIndex];
 
     HideAllLights();
 
@@ -134,7 +134,7 @@ public class HexagonImagesGenerator : EditorWindow
     GetWindowWithRect<HexagonImagesGenerator>(new Rect(0, 0, 350, 205), true, "Generate Map Images for Hexagons", true);
   }
 
-  private class Hexagon
+  private class HexagonRender
   {
     private UnityEngine.Object hexagon;
     private OrderedDictionary hexagonSymbolOffsets = new OrderedDictionary() {
@@ -156,7 +156,7 @@ public class HexagonImagesGenerator : EditorWindow
     private List<Renderer> hiddenChildren = new List<Renderer>();
     private List<Renderer> visibleChildren = new List<Renderer>();
 
-    public Hexagon(UnityEngine.Object gameObject) => hexagon = gameObject;
+    public HexagonRender(UnityEngine.Object gameObject) => hexagon = gameObject;
 
     public Renderer[] Children
     {
@@ -198,14 +198,26 @@ public class HexagonImagesGenerator : EditorWindow
       get { return hexagon as GameObject; }
     }
 
+    public HexagonProperties HexagonProperties
+    {
+      get { return (HexagonProperties)this.GameObject.GetComponent(typeof(HexagonProperties)); }
+    }
+
     public string Name
     {
       get { return hexagon.name; }
     }
 
-    public sbyte SymbolNumber
+    public byte SymbolNumber
     {
-      get { return ((HexagonProperties)this.GameObject.GetComponent(typeof(HexagonProperties))).symbolNumber; }
+      get {
+        byte hexagonEncoding = Hexagon.ExitArrayToEncoding(this.HexagonProperties.hasExit).Item1;
+        byte hexagonSymbolNumber = Hexagon.TreasureRoomCode(hexagonEncoding, this.HexagonProperties.variant);
+
+        Debug.Log($"{hexagonEncoding} {this.HexagonProperties.variant} {hexagonSymbolNumber}");
+
+        return hexagonSymbolNumber;
+      }
     }
 
     public void Focus()
@@ -229,7 +241,7 @@ public class HexagonImagesGenerator : EditorWindow
 
       RevealPath();
       ConfigureCamera(ref camera, ref hexagonalAspectRatio);
-      if (this.SymbolNumber > -1) RenderHexagonSymbol(ref imageRenderer);
+      RenderHexagonSymbol(ref imageRenderer);
 
       if (renderMode == RenderModes.Scene)
       {
