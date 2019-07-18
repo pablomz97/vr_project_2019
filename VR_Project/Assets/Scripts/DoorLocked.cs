@@ -39,6 +39,7 @@ public class DoorLocked : MonoBehaviour
     {
       solved = true;
       anim.Play("AN_Door_open", 0, 0);
+      Destroy(transform.Find("Door_Collider").gameObject);
     }
   }
 

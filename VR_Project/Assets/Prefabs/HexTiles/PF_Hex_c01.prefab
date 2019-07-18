@@ -77,6 +77,7 @@ GameObject:
   - component: {fileID: 3728379409281918968}
   - component: {fileID: 3625880651554819859}
   - component: {fileID: 3327322398480452046}
+  - component: {fileID: 578455035307537688}
   m_Layer: 0
   m_Name: PF_Hex_c01
   m_TagString: Untagged
@@ -227,6 +228,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasExit: 000100000100
+  variant: 0
+--- !u!64 &578455035307537688
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3134799310016942884}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: -2124705421725058983, guid: e43407b742499e242a06648983bf42d7, type: 3}
 --- !u!1 &3426817204618057149
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,7 +274,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3426817204618057149}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.00915, y: 0.03316, z: 0}
+  m_LocalPosition: {x: -0.00915, y: 0.03316, z: 0.00076}
   m_LocalScale: {x: 0.0066666664, y: 0.010000004, z: 0.00666667}
   m_Children: []
   m_Father: {fileID: 2151122507437302071}

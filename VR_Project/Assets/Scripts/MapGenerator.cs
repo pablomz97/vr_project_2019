@@ -151,6 +151,7 @@ public abstract class MapGenerator
         for(int dir = 0; dir < 6; ++dir)
         {
             Hexagon neighbor = grid.keyTarget.GetNeighbor((Hexagon.Direction)dir);
+            //Door.symbols[dir].GetComponent<SymbolPanel>().setNumber(neighbor.TreasureRoomCode());
             Door.targetCode[dir]= neighbor.TreasureRoomCode();
         }
 
