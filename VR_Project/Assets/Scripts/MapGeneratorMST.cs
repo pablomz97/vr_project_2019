@@ -18,14 +18,14 @@ public class MapGeneratorMST : MapGenerator
         HexagonGrid secondGrid = secondGridObj.GetComponent<HexagonGrid>();
         secondGrid.CreateHexagons();
 
-        RandomizeEdgeCost(grid, 983417298);
-        RandomizeEdgeCost(secondGrid, -520446908);
+        RandomizeEdgeCost(grid);//, 983417298);
+        RandomizeEdgeCost(secondGrid);//, -520446908);
 
 
         CalculateMST(grid);
         CalculateMST(secondGrid);
 
-        grid.Union(secondGrid, 0.8f, -1364483737);
+        grid.Union(secondGrid, 0.9f);//, -1364483737);
         HexagonGrid.Destroy(secondGrid.gameObject);
 
         MatchConstraints();

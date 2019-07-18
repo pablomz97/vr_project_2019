@@ -114,6 +114,8 @@ public class LevelController : MonoBehaviour
         mainGrid.LoadHexagons();
 
         mapGen.initializeDoor();
+        mapGen.placeHintObjects();
+        mapGen.placeStones();
 
         /*
         for(int row = 0; row < gridHeight; row++)

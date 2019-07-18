@@ -140,6 +140,23 @@ public abstract class MapGenerator
 
     }
 
+    public void placeStones()
+    {
+        GameObject stone = GameObject.Find("PF_Rock");
+
+        List<Hexagon> hexTiles = grid.GetHexagons();
+
+        for(int k = 0; k < 12; ++k)
+        {
+            Vector2 offset = UnityEngine.Random.insideUnitCircle * 2;
+            int index = UnityEngine.Random.Range(0, hexTiles.Count);
+            Vector3 targetPos = new Vector3(hexTiles[index].GameObject.transform.position.x + offset.x, hexTiles[index].GameObject.transform.position.y + 0.2f, hexTiles[index].GameObject.transform.position.z + offset.y);
+
+            HexagonGrid.Instantiate(stone, targetPos, Quaternion.identity);
+            hexTiles.Remove(hexTiles[index]);
+        }
+    }
+
     public void initializeDoor()
     {
         GameObject treasurePrefab = grid.treasureRoom.GameObject;
@@ -154,8 +171,6 @@ public abstract class MapGenerator
             //Door.symbols[dir].GetComponent<SymbolPanel>().setNumber(neighbor.TreasureRoomCode());
             Door.targetCode[dir]= neighbor.TreasureRoomCode();
         }
-
-        placeHintObjects();
     }
 
     private bool AugmentHexagonsByDeletion(int deg, byte encoding, int maxCount, List<Hexagon> hexagonsOfType)
