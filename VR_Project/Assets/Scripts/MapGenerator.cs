@@ -299,7 +299,7 @@ public abstract class MapGenerator
             }
         }
 
-        return false;
+        return true;
     }
 
     private bool IsEdgeOnCycle((Hexagon, Hexagon) edge)

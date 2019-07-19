@@ -22,14 +22,21 @@ public class DoorLocked : MonoBehaviour
 
   public bool checkCode()
   {
+    bool correct = true;
     for(int i = 0; i < symbols.Length; ++i)
     {
       Debug.Log("symbol: " + i.ToString() + " target: " + targetCode[i] + " current: " + symbols[i].GetComponent<SymbolPanel>().getNumber());
       if(symbols[i].GetComponent<SymbolPanel>().getNumber() != targetCode[i])
-        return false;
+      {
+        correct = false;
+      }
+      else
+      {
+          symbols[i].GetComponent<SymbolPanel>().markSolved();
+      }
     }
 
-    return true;
+    return correct;
   }
 
   public void updateDoor()

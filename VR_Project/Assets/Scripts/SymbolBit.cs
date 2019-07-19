@@ -35,6 +35,17 @@ public class SymbolBit : MonoBehaviour
         return active;
     }
 
+    public void markCorrect()
+    {
+        editable = false;
+        MeshRenderer renderer = GetComponent<MeshRenderer>();
+        Material mat = new Material(renderer.sharedMaterial);
+        mat.SetColor("_EmissionColor", new Color(active ? baseBrightness*.6f : 0,
+                                                 active ? baseBrightness*1.5f : 0,
+                                                 active ? baseBrightness*.6f : 0));
+        renderer.sharedMaterial = mat;
+    }
+
     public void toggleActive()
     {
         if(editable)

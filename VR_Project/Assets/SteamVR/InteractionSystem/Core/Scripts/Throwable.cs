@@ -217,6 +217,22 @@ namespace Valve.VR.InteractionSystem
         protected virtual void HandAttachedUpdate(Hand hand)
         {
 
+             GrabTypes startingGrabType = hand.GetGrabStarting();
+
+            if (startingGrabType != GrabTypes.None)
+            {
+				isGrabbed = !isGrabbed;
+				if(isGrabbed)
+				{
+					hand.AttachObject( gameObject, startingGrabType, attachmentFlags, attachmentOffset );
+	                hand.HideGrabHint();
+				}
+				else
+				{
+					hand.DetachObject(gameObject, restoreOriginalParent);
+				}
+            }
+
 
             if (hand.IsGrabEnding(this.gameObject))
             {
