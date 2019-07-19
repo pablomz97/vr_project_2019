@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 9024354184779280876}
   - component: {fileID: 392591896152659532}
   - component: {fileID: 8771094320132366531}
+  - component: {fileID: -5229417519010299742}
   m_Layer: 0
   m_Name: PF_Rock
   m_TagString: Untagged
@@ -208,3 +209,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   interactable: {fileID: 0}
+--- !u!114 &-5229417519010299742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8815169581974577041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f22aea755921b42be8267a873f68ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound:
+  - {fileID: 8300000, guid: 3976b703de46da2429466fc25d98c717, type: 3}
+  - {fileID: 8300000, guid: 8a4f28a3cd044974c8a9956e3495440f, type: 3}
+  volume: 1

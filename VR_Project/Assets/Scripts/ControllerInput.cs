@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
+using System;
 
 public class ControllerInput : MonoBehaviour
 {
@@ -21,6 +22,12 @@ public class ControllerInput : MonoBehaviour
 	private GameObject lastSymbolBit;
 	private Vector3 colliderPosition;
 
+	private AudioSource audioSource;
+	public AudioClip[] sounds;
+	[Range(0f,1f)]
+	public float volume;
+	System.Random rnd = new System.Random();
+
 	void Start()
 	{
 		ChalkAction.AddOnStateDownListener(OnTriggerPressed, handType);
@@ -31,6 +38,11 @@ public class ControllerInput : MonoBehaviour
 
 		symbolBits = GameObject.FindGameObjectsWithTag("SymbolBit");
 		
+		//AudioSource Setup
+		audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.loop = false;
+        audioSource.volume = volume;
+        audioSource.playOnAwake = false;
 	}
 
 	public void OnTouchpadPressed(SteamVR_Action_Boolean ChalkAction, SteamVR_Input_Sources source)
@@ -39,6 +51,11 @@ public class ControllerInput : MonoBehaviour
 		{
 			GameObject currentBit = lastSymbolBit;
 			currentBit.GetComponent<SymbolBit>().toggleActive();
+
+			//click sound
+			int i = rnd.Next(0, sounds.Length);
+			audioSource.clip = sounds[i];
+			audioSource.Play();
 		}
 	}
 

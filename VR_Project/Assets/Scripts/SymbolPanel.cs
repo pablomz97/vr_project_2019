@@ -26,6 +26,12 @@ public class SymbolPanel : MonoBehaviour
             bit.GetComponent<SymbolBit>().registerCallback(callback);
     }
 
+    public void markSolved()
+    {
+        foreach (var bit in bits)
+            bit.GetComponent<SymbolBit>().markCorrect();
+    }
+
     // Update is called once per frame
     void Update()
     {
