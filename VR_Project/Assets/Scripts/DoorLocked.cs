@@ -8,6 +8,8 @@ public class DoorLocked : MonoBehaviour
   private bool solved = false;
   public GameObject[] symbols;
   public GameObject middleSymbol;
+  private float timestamp;
+  private bool codeChecked;
   public int[] targetCode = new int[]{127, 127, 127, 127, 127, 127};
 
   // Start is called before the first frame update
@@ -17,7 +19,7 @@ public class DoorLocked : MonoBehaviour
     //anim.Play("AN_Door_open", 0, 0);
 
     foreach(var symbol in symbols)
-      symbol.GetComponent<SymbolPanel>().registerCallback(updateDoor);
+      symbol.GetComponent<SymbolPanel>().registerCallback(UpdateDoor);
   }
 
   public bool checkCode()
@@ -39,20 +41,25 @@ public class DoorLocked : MonoBehaviour
     return correct;
   }
 
-  public void updateDoor()
+  public void UpdateDoor()
   {
-    Debug.Log("checking code");
-    if(!solved && checkCode())
-    {
-      solved = true;
-      anim.Play("AN_Door_open", 0, 0);
-      Destroy(transform.Find("Door_Collider").gameObject);
-    }
+	timestamp = Time.time;
+	codeChecked = false;
   }
 
   // Update is called once per frame
-  void Update()
+  void FixedUpdate()
   {
-
+	if (!codeChecked && Time.time - timestamp > 3)
+	{
+	  Debug.Log("checking code");
+	  if (!solved && checkCode())
+	  {
+	    solved = true;
+	    anim.Play("AN_Door_open", 0, 0);
+	    Destroy(transform.Find("Door_Collider").gameObject);
+	  }
+	  codeChecked = true;
+	}
   }
 }
