@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 8511867322561454318}
   - component: {fileID: 8511867322561454319}
   - component: {fileID: 8511867322561454317}
+  - component: {fileID: 5613871768859962225}
+  - component: {fileID: 5008085014473670580}
   m_Layer: 0
   m_Name: Torch
   m_TagString: Untagged
@@ -150,6 +152,35 @@ MonoBehaviour:
   handFollowTransform: 1
   highlightOnHover: 1
   hideHighlight: []
+--- !u!114 &5613871768859962225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338490512987189630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f22aea755921b42be8267a873f68ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  source: {fileID: 550349562736298468}
+  sound:
+  - {fileID: 8300000, guid: e8744204d5f49aa4ea32493a23322d83, type: 3}
+  volume: 1
+--- !u!65 &5008085014473670580
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338490512987189630}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.084451675, y: 0.5943527, z: 0.07300758}
+  m_Center: {x: 0.0039396286, y: -0.23286247, z: 0.0016908646}
 --- !u!1 &1441319378717869392
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,6 +470,7 @@ GameObject:
   - component: {fileID: 6282526662361976107}
   - component: {fileID: 8438515756348516014}
   - component: {fileID: 8511867322399712564}
+  - component: {fileID: 4398894242677461823}
   m_Layer: 0
   m_Name: Stick
   m_TagString: Untagged
@@ -533,6 +565,22 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 14
   m_Mesh: {fileID: -4224193870148154796, guid: 376fd02eb1aac1d4f9dd03dc62970975, type: 3}
+--- !u!114 &4398894242677461823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7284457518431907391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f22aea755921b42be8267a873f68ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  source: {fileID: 550349562736298468}
+  sound:
+  - {fileID: 8300000, guid: e8744204d5f49aa4ea32493a23322d83, type: 3}
+  volume: 1
 --- !u!1 &7372337099546970865
 GameObject:
   m_ObjectHideFlags: 0
@@ -5425,7 +5473,7 @@ ParticleSystem:
 --- !u!199 &7431349780680024537
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -10204,7 +10252,7 @@ ParticleSystem:
 --- !u!199 &7431349781423641209
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
