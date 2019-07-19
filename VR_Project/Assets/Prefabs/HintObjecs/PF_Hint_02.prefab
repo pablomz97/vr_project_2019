@@ -73,8 +73,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 9
   m_Type: 0
-  m_Color: {r: 1, g: 0.9581463, b: 0.867, a: 1}
-  m_Intensity: 0.75
+  m_Color: {r: 1, g: 0.92317307, b: 0.765, a: 1}
+  m_Intensity: 0.6
   m_Range: 2.5
   m_SpotAngle: 82
   m_InnerSpotAngle: 21.80208
@@ -123,6 +123,20 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!64 &4139954275759841857
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8150381406286099987}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 1
+  m_CookingOptions: 14
+  m_Mesh: {fileID: -6816310258988465787, guid: cbe6a0d108d59674bb87e87e06c77c18, type: 3}
 --- !u!1001 &160464525335654170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -207,6 +221,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbe6a0d108d59674bb87e87e06c77c18, type: 3}
+--- !u!1 &8150381406286099987 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: cbe6a0d108d59674bb87e87e06c77c18,
+    type: 3}
+  m_PrefabInstance: {fileID: 160464525335654170}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5134281061340496896 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: cbe6a0d108d59674bb87e87e06c77c18,
