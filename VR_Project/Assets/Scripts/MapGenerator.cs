@@ -12,7 +12,7 @@ public abstract class MapGenerator
         this.grid = grid;
     }
 
-    public abstract void GenerateMap();
+    public abstract bool GenerateMap();
 
     public void RandomizeEdgeCost(HexagonGrid grid)
     {
@@ -35,12 +35,11 @@ public abstract class MapGenerator
         }
     }
 
-    protected void MatchConstraints()
+    protected bool MatchConstraints()
     {
         // Set upper right half-edge for treasure room
         grid.GetHexagonAt(grid.GridHeight - 1, grid.GridWidth - 1).SetHasExit(Hexagon.Direction.BotRight, true);
 
-        int maxCount = 5;
         byte[][] encodings = LevelController.allHexagonEncodings;
         for (int deg = 6; deg > 0; deg--)
         {
@@ -48,9 +47,19 @@ public abstract class MapGenerator
             {
                 grid.hexPrefabsUsageIndex.TryGetValue(encodings[deg][i], out List<Hexagon> hexagonsOfType);
                 
-                if (hexagonsOfType != null && hexagonsOfType.Count > maxCount)
+                
+                if (hexagonsOfType != null)
                 {
-                    AugmentHexagonsByInsertion(deg, encodings[deg][i], maxCount, hexagonsOfType);
+                    int maxCount = Hexagon.hexPrefabs.TryGetValue(encodings[deg][i], out List<Hexagon> existingPrefabsOfType) ? existingPrefabsOfType.Count : 0;
+                    Debug.Log("maxCount: " + maxCount);
+                    if (hexagonsOfType.Count > maxCount)
+                    {
+                        if (!AugmentHexagonsByInsertion(deg, encodings[deg][i], maxCount, hexagonsOfType))
+                        {
+                            Debug.Log("Constraints could not be matched.");
+                            return false;
+                        }
+                    }
                 }
             }
         }
@@ -66,6 +75,7 @@ public abstract class MapGenerator
                 }
             }
         }*/
+        return true;
 
     }
 
@@ -286,8 +296,10 @@ public abstract class MapGenerator
             }
 
             grid.hexPrefabsUsageIndex.TryGetValue(Hexagon.ExitArrayToEncoding(hasExit).Item1, out List<Hexagon> replacementCandidates);
-
-            while (hexagonsOfType.Count > maxCount && (replacementCandidates == null || replacementCandidates.Count < maxCount))
+            Hexagon.hexPrefabs.TryGetValue(Hexagon.ExitArrayToEncoding(hasExit).Item1, out List<Hexagon> existingReplacementCandidates);
+            int rcMaxCount = existingReplacementCandidates.Count;
+            Debug.Log("rcMaxCount: " + rcMaxCount);
+            while (hexagonsOfType.Count > maxCount && (replacementCandidates == null || replacementCandidates.Count < rcMaxCount))
             {
                 Hexagon hexToModify = hexagonsOfType[0];
                 Hexagon.Direction orientation = hexToModify.EncodeStart;
@@ -296,10 +308,18 @@ public abstract class MapGenerator
                 {
                     hexToModify.SetHasExit((Hexagon.Direction)(((int)orientation + falseIndices[j]) % 6), hasExit[falseIndices[j]]);
                 }
+
+                if(replacementCandidates == null) // we might now be able to obtain a reference
+                {
+                    grid.hexPrefabsUsageIndex.TryGetValue(Hexagon.ExitArrayToEncoding(hasExit).Item1, out  replacementCandidates);
+                }
             }
         }
 
-        return false;
+        grid.hexPrefabsUsageIndex.TryGetValue(encoding, out List<Hexagon> controllist);
+        Debug.Log("Size: " + controllist.Count);
+        
+        return hexagonsOfType.Count <= maxCount;
     }
 
     private bool IsEdgeOnCycle((Hexagon, Hexagon) edge)

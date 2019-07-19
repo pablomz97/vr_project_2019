@@ -109,7 +109,12 @@ public class LevelController : MonoBehaviour
         mainGrid.CreateHexagons();
 
         MapGenerator mapGen = new MapGeneratorMST(mainGrid);
-        mapGen.GenerateMap();
+        while(!mapGen.GenerateMap())
+        {
+            mainGrid.CreateHexagons(); //reset hexagons
+            mapGen = new MapGeneratorMST(mainGrid);
+            Debug.Log("Map Generation Failed! Retrying...");
+        }
 
         mainGrid.LoadHexagons();
 
@@ -136,6 +141,7 @@ public class LevelController : MonoBehaviour
 
 
         //Test treasure room code
+        /*
         HashSet<byte> mappings = new HashSet<byte>();
 
         for(byte i = 1; i < 128; i++)
@@ -152,6 +158,7 @@ public class LevelController : MonoBehaviour
         {
             Debug.Log("1 already contained as expected.");
         }
+        */
     }
 
     // Update is called once per frame

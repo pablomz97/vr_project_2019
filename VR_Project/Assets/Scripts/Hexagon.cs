@@ -496,7 +496,7 @@ public class Hexagon
 
         (byte encoding, Hexagon.Direction dir) = Hexagon.ExitArrayToEncoding(hasExit);
 
-        bool success = hexPrefabs.TryGetValue(HexagonGrid.debugMode ? 0 : encoding, out List<Hexagon> hexagonOfType);
+        bool success = hexPrefabs.TryGetValue(HexagonGrid.debugMode ? 0 : encoding, out List<Hexagon> hexagonOfType) && hexagonOfType.Count != 0;
         if (!success) // tile not available
         {
             hexPrefabs.TryGetValue(0, out hexagonOfType);

@@ -12,31 +12,38 @@ public class MapGeneratorMST : MapGenerator
 
     }
 
-    public override void GenerateMap()
+    public override bool GenerateMap()
     {
         GameObject secondGridObj = HexagonGrid.Instantiate(grid.gameObject);
         HexagonGrid secondGrid = secondGridObj.GetComponent<HexagonGrid>();
         secondGrid.CreateHexagons();
 
-        RandomizeEdgeCost(grid);//, 983417298);
-        RandomizeEdgeCost(secondGrid);//, -520446908);
+        RandomizeEdgeCost(grid);//, 267137965);
+        RandomizeEdgeCost(secondGrid);//, -2037475287);
 
 
         CalculateMST(grid);
         CalculateMST(secondGrid);
 
-        grid.Union(secondGrid, 0.9f);//, -1364483737);
+        grid.Union(secondGrid, 0.9f);//, -883041461);
         HexagonGrid.Destroy(secondGrid.gameObject);
 
-        MatchConstraints();
+        if (!MatchConstraints())
+        {
+            return false;
+        }
+
         grid.keyTarget = CalcTreasureRoomLock();
         Debug.Log("Maxtile: " + grid.keyTarget.rowIndex + "," + grid.keyTarget.colIndex);
         
+        /*
         foreach(int key in grid.hexPrefabsUsageIndex.Keys)
         {
             grid.hexPrefabsUsageIndex.TryGetValue(key, out List<Hexagon> hexagonsOfType);
             Debug.Log("key: " + Convert.ToString(key, 2) + " count: " + hexagonsOfType.Count);
-        }        
+        }
+        */
+        return true;
     }
 
     private void CalculateMST(HexagonGrid mstGrid)
