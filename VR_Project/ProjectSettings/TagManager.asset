@@ -12,6 +12,7 @@ TagManager:
   - Hexagon
   - SymbolBit
   - HintObject
+  - Torch
   layers:
   - Default
   - TransparentFX

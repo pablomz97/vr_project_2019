@@ -551,6 +551,11 @@ namespace Valve.VR.InteractionSystem
                 attachedObject.attachedObject.transform.rotation = attachedObject.easeSourceRotation;
             }
 
+            /*if(attachedObject.attachedObject.CompareTag("Torch")){
+                attachedObject.attachedObject.transform.position = new Vector3(0,0,0);
+                attachedObject.attachedObject.transform.rotation = Quaternion.Euler(19,-76,-62);
+            }*/
+
             attachedObjects.Add(attachedObject);
 
             UpdateHovering();
