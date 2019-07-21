@@ -12,14 +12,30 @@ public class DoorLocked : MonoBehaviour
   private bool codeChecked;
   public int[] targetCode = new int[]{127, 127, 127, 127, 127, 127};
 
+  //opening audio variables
+  private AudioSource source;
+  [Range(0f,1f)]
+  public float volume = 1f;
+  public AudioClip openingSound;
+  public AudioClip unlockingSound;
+
   // Start is called before the first frame update
   void Start()
   {
     anim = GetComponent<Animator>();
     //anim.Play("AN_Door_open", 0, 0);
 
-    foreach(var symbol in symbols)
-      symbol.GetComponent<SymbolPanel>().registerCallback(UpdateDoor);
+    foreach (var symbol in symbols)
+    {
+        symbol.GetComponent<SymbolPanel>().registerCallback(UpdateDoor);
+    }
+
+    anim = GetComponent<Animator>();
+    source = this.gameObject.AddComponent<AudioSource>();
+    //source = GetComponent<AudioSource>();
+    source.loop = false;
+    source.playOnAwake = false;
+    source.volume = volume;
   }
 
   public bool checkCode()
@@ -56,10 +72,26 @@ public class DoorLocked : MonoBehaviour
 	  if (!solved && checkCode())
 	  {
 	    solved = true;
-	    anim.Play("AN_Door_open", 0, 0);
-	    Destroy(transform.Find("Door_Collider").gameObject);
+	    //anim.Play("AN_Door_open", 0, 0);
+        StartCoroutine(openDoor());
+        Destroy(transform.Find("Door_Collider").gameObject);
 	  }
 	  codeChecked = true;
 	}
+  }
+
+  //opening door coroutine (anim + audio)
+  IEnumerator openDoor()
+  {
+    anim.Play("AN_Door_open", 0, 0);
+
+    //source.clip = unlockingSound;
+    source.PlayOneShot(unlockingSound);
+    yield return new WaitForSeconds(1);
+
+    //source.clip = openingSound;
+    source.PlayOneShot(openingSound);
+
+    yield return null;
   }
 }
