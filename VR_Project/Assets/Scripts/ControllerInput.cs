@@ -18,15 +18,22 @@ public class ControllerInput : MonoBehaviour
 	private PaintChalk chalk;
 
 	private bool paint;
-	private GameObject[] symbolBits;
+    private GameObject[] symbolBits;
 	private GameObject lastSymbolBit;
 	private Vector3 colliderPosition;
 
-	private AudioSource audioSource;
-	public AudioClip[] sounds;
-	[Range(0f,1f)]
-	public float volume;
-	System.Random rnd = new System.Random();
+	private AudioSource audioSourceClick;
+	public AudioClip[] clickSounds;
+    [Range(0f,1f)]
+	public float volumeClick;
+
+    private AudioSource audioSourceChalk;
+    public AudioClip[] chalkSounds;
+    [Range(0f, 1f)]
+    public float volumeChalk;
+    private bool soundOn;
+
+    System.Random rnd = new System.Random();
 
 	void Start()
 	{
@@ -37,13 +44,19 @@ public class ControllerInput : MonoBehaviour
 		Debug.Log("Added listener");
 
 		symbolBits = GameObject.FindGameObjectsWithTag("SymbolBit");
-		
-		//AudioSource Setup
-		audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.loop = false;
-        audioSource.volume = volume;
-        audioSource.playOnAwake = false;
-	}
+
+        //AudioSource Setup for clicks
+        audioSourceClick = gameObject.AddComponent<AudioSource>();
+        audioSourceClick.loop = false;
+        audioSourceClick.volume = volumeClick;
+        audioSourceClick.playOnAwake = false;
+
+        //AudioSource Setup for chalk
+        audioSourceChalk = gameObject.AddComponent<AudioSource>();
+        audioSourceChalk.loop = false;
+        audioSourceChalk.volume = volumeChalk;
+        audioSourceChalk.playOnAwake = false;
+    }
 
 	public void OnTouchpadPressed(SteamVR_Action_Boolean ChalkAction, SteamVR_Input_Sources source)
 	{
@@ -53,9 +66,9 @@ public class ControllerInput : MonoBehaviour
 			currentBit.GetComponent<SymbolBit>().toggleActive();
 
 			//click sound
-			int i = rnd.Next(0, sounds.Length);
-			audioSource.clip = sounds[i];
-			audioSource.Play();
+			int i = rnd.Next(0, clickSounds.Length);
+            audioSourceClick.clip = clickSounds[i];
+            audioSourceClick.Play();
 		}
 	}
 
@@ -85,18 +98,21 @@ public class ControllerInput : MonoBehaviour
 
 	void FixedUpdate()
 	{
+        StartCoroutine(playChalk());
 		if(paint)
 		{
 			Vector3 handPos = GameObject.Find("RightHand").transform.position;
 			Debug.Log("controller height: " + handPos.y);
 			if(handPos.y <= (0.15f + 0.13f))
 			{
-				chalk.Add(handPos);
-				Debug.Log("adding point to chalk line"); 
+                soundOn = true;
+                chalk.Add(handPos);
+				Debug.Log("adding point to chalk line");
 			}
 			else
 			{
-				if (chalkLines[chalkLines.Count - 1].IsEmpty())
+                soundOn = false;
+                if (chalkLines[chalkLines.Count - 1].IsEmpty())
 				{
 					Destroy(chalkLines[chalkLines.Count - 1].gameObject);
 					chalkLines.RemoveAt(chalkLines.Count - 1);
@@ -136,4 +152,27 @@ public class ControllerInput : MonoBehaviour
 			}
 		}
 	}
+
+    IEnumerator playChalk()
+    {
+        if (soundOn)
+        {
+            if (!audioSourceChalk.isPlaying)
+            {
+                //chalk sound
+                int i = rnd.Next(0, chalkSounds.Length);
+                audioSourceChalk.clip = chalkSounds[i];
+                audioSourceChalk.Play();
+            }
+        }
+        else
+        {
+            if (audioSourceChalk.isPlaying)
+            {
+                audioSourceChalk.Stop();
+            }
+        }
+
+        yield return null;
+    }
 }
