@@ -123,7 +123,7 @@ namespace Valve.VR.InteractionSystem
         {
             GrabTypes startingGrabType = hand.GetGrabStarting();
 
-            if (startingGrabType != GrabTypes.None)
+            if (startingGrabType == GrabTypes.Grip && hand.handType == SteamVR_Input_Sources.RightHand)
             {
 				isGrabbed = !isGrabbed;
 				if(isGrabbed)
@@ -219,7 +219,7 @@ namespace Valve.VR.InteractionSystem
 
              GrabTypes startingGrabType = hand.GetGrabStarting();
 
-            if (startingGrabType != GrabTypes.None)
+            if (startingGrabType == GrabTypes.Grip && hand.handType == SteamVR_Input_Sources.RightHand)
             {
 				isGrabbed = !isGrabbed;
 				if(isGrabbed)

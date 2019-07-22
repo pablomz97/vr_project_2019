@@ -99,7 +99,7 @@ public abstract class MapGenerator
                 }
             }
         }
-
+        Debug.Log("Maxtile sum: " + max);
         return grid.GetHexagonAt(maxIndex.Item1, maxIndex.Item2);
     }
 
