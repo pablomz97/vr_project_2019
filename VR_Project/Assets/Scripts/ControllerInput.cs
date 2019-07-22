@@ -88,6 +88,7 @@ public class ControllerInput : MonoBehaviour
 	public void OnTriggerReleased(SteamVR_Action_Boolean ChalkAction, SteamVR_Input_Sources source)
 	{
 		paint = false;
+		soundOn = false;
 		if (chalkLines[chalkLines.Count - 1].IsEmpty())
 		{
 			Destroy(chalkLines[chalkLines.Count - 1].gameObject);

@@ -11,6 +11,9 @@ public class DoorLocked : MonoBehaviour
   private float timestamp;
   private bool codeChecked;
   public int[] targetCode = new int[]{127, 127, 127, 127, 127, 127};
+  public GameObject tpArea;
+
+  public bool openOnInit = false;
 
   //opening audio variables
   private AudioSource source;
@@ -59,30 +62,37 @@ public class DoorLocked : MonoBehaviour
 
   public void UpdateDoor()
   {
-	timestamp = Time.time;
-	codeChecked = false;
+    timestamp = Time.time;
+    codeChecked = false;
   }
 
   // Update is called once per frame
   void FixedUpdate()
   {
-	if (!codeChecked && Time.time - timestamp > 3)
-	{
-	  Debug.Log("checking code");
-	  if (!solved && checkCode())
-	  {
-	    solved = true;
-	    //anim.Play("AN_Door_open", 0, 0);
-        StartCoroutine(openDoor());
-        Destroy(transform.Find("Door_Collider").gameObject);
-	  }
-	  codeChecked = true;
-	}
+    if(openOnInit)
+    {
+      StartCoroutine(openDoor());
+      Destroy(transform.Find("Door_Collider").gameObject);
+    }
+    if (!codeChecked && Time.time - timestamp > 3)
+    {
+      Debug.Log("checking code");
+      if (!solved && checkCode())
+      {
+        solved = true;
+        //anim.Play("AN_Door_open", 0, 0);
+          StartCoroutine(openDoor());
+          Destroy(transform.Find("Door_Collider").gameObject);
+          tpArea.SetActive(true);
+      }
+      codeChecked = true;
+    }
   }
 
   //opening door coroutine (anim + audio)
   IEnumerator openDoor()
   {
+    openOnInit = false;
     anim.Play("AN_Door_open", 0, 0);
 
     //source.clip = unlockingSound;
