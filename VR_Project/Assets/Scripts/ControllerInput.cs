@@ -32,6 +32,7 @@ public class ControllerInput : MonoBehaviour
     [Range(0f, 1f)]
     public float volumeChalk;
     private bool soundOn;
+    private int lastSound = 0;
 
     System.Random rnd = new System.Random();
 
@@ -161,7 +162,11 @@ public class ControllerInput : MonoBehaviour
             if (!audioSourceChalk.isPlaying)
             {
                 //chalk sound
-                int i = rnd.Next(0, chalkSounds.Length);
+                do
+                {
+                    int i = rnd.Next(0, chalkSounds.Length);
+                } while (i == lastSound);
+                lastSound = i;
                 audioSourceChalk.clip = chalkSounds[i];
                 audioSourceChalk.Play();
             }
