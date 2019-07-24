@@ -162,9 +162,10 @@ public class ControllerInput : MonoBehaviour
             if (!audioSourceChalk.isPlaying)
             {
                 //chalk sound
+				int i;
                 do
                 {
-                    int i = rnd.Next(0, chalkSounds.Length);
+                    i = rnd.Next(0, chalkSounds.Length);
                 } while (i == lastSound);
                 lastSound = i;
                 audioSourceChalk.clip = chalkSounds[i];
